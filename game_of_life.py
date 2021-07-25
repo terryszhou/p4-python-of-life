@@ -1,5 +1,5 @@
 # # IMPORT MODULES - - - - - - - - - - - - - - - - - - -
-import pygame
+import pygame, math
 from sys import exit
 
 pygame.init()
@@ -14,33 +14,37 @@ cell_height = 20
 margin = 1
 
 grid = []
+
 for row in range(36):
     grid.append([])
     for column in range(36):
         grid[row].append(0)
-
-cell_surf = pygame.Surface((cell_width, cell_height))
-cell_surf.fill("white")
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            column = int(event.pos[0]/(cell_width + margin))
+            row = int(event.pos[1]/(cell_height + margin))
+            if grid[row][column] == 0:
+                grid[row][column] = 1
+            else:
+                grid[row][column] = 0
 
-    if game_active == True:
-        screen.fill("grey")
-        for row in range(36):
-            for column in range(36):
-                pygame.draw.rect(screen, "black", [
-                    (margin + cell_width) * column + margin,
-                    (margin + cell_height) * row + margin,
-                    cell_width,
-                    cell_height
-                ])
-
-
-
+    screen.fill("grey")
+    for row in range(36):
+        for column in range(36):
+            color = (44,44,44)
+            if grid[row][column] == 1:
+                color = "white"
+            pygame.draw.rect(screen, color, [
+                (margin + cell_width) * column + margin,
+                (margin + cell_height) * row + margin,
+                cell_width,
+                cell_height
+            ]) # <-- pygame.draw.rect(surface, color, [left, top, width, height])
 
     pygame.display.update()
     clock.tick(30)
