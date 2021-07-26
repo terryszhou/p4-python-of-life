@@ -55,19 +55,26 @@ while True:
                             grid[row][column] = 0
 
     # # DRAW CELLS - - - - - - - - - - - - - - - - -
-    for row in range(36):
-        for column in range(36):
+    for row in range(35):
+        for column in range(35):
             color = (44,44,44)
             cell = grid[row][column]
-            if cell == 1:
-                color = "white"
-                neighbors = (grid[row][column + 1], grid[row][column - 1], grid[row - 1][column],
-                            grid[row + 1][column], grid[row - 1][column -1], grid[row - 1][column + 1],
-                            grid[row + 1][column - 1], grid[row + 1][column + 1])
-                neighbors_count = sum(neighbors)
-                if pause == False:
-                    if neighbors_count <=1  or neighbors_count >= 4:
+            neighbors = (grid[row][column + 1], grid[row][column - 1], grid[row - 1][column],
+                        grid[row + 1][column], grid[row - 1][column -1], grid[row - 1][column + 1],
+                        grid[row + 1][column - 1], grid[row + 1][column + 1])
+            neighbors_count = sum(neighbors)
+            if pause == False:
+                if cell == 1:
+                    color = "white"
+                    if neighbors_count < 2  or neighbors_count > 3:
                         grid[row][column] = 0
+                else:
+                    if neighbors_count == 3:
+                        grid[row][column] = 1
+            else:
+                if cell == 1:
+                    color = "white"
+
             pygame.draw.rect(screen,
                             color,
                             [(margin + cell_width) * column + margin,
@@ -76,11 +83,11 @@ while True:
                             cell_height]) # <-- pygame.draw.rect(surface, color, [left, top, width, height])
 
     # # TESTING - - - - - - - - - - - - - - - - -
-    screen.blit(test_surface, test_rect)
-    if pause == False:
-        test_rect.x += 5
-    else:
-        test_rect.x = test_rect.x
+    # screen.blit(test_surface, test_rect)
+    # if pause == False:
+    #     test_rect.x += 5
+    # else:
+    #     test_rect.x = test_rect.x
 
     # # UPDATE CLOCK AND DISPLAY - - - - - - - - - - - - - - - - - - -
     pygame.display.update()

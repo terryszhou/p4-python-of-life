@@ -1,4 +1,24 @@
 '''
+neighbors = []
+if row - 1 >= 0 and column + 1 <= 36:
+    neighbors.append(grid[row - 1][column + 1])
+if row + 1 <= 36 and column + 1 <= 36:
+    neighbors.append(grid[row + 1][column + 1])
+if row + 1 <= 36 and column - 1 >= 0:
+    neighbors.append(grid[row + 1][column - 1])
+if row - 1 >= 0 and column - 1 >= 0:
+    neighbors.append(grid[row - 1][column - 1])
+if column + 1 <= 36:
+    neighbors.append(grid[row][column + 1])
+if row + 1 <= 26:
+    neighbors.append(grid[row + 1][column])
+if column - 1 >= 0:
+    neighbors.append(grid[row][column - 1])
+if row - 1 >= 0:
+    neighbors.append(grid[row - 1][column])
+'''
+
+'''
 for row in range(36):
     for column in range(36):
         color = (44,44,44)
