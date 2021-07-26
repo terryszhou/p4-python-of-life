@@ -45,6 +45,11 @@ while True:
                     pause = True
                 else:
                     pause = False
+            if event.key == pygame.K_q:
+                if pause == True:
+                    for row in range(36):
+                        for column in range(36):
+                            grid[row][column] = 0
 
     for row in range(36):
         for column in range(36):
