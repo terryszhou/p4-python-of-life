@@ -16,7 +16,7 @@ pause = False
 class Game_Of_Life:
     def __init__(self):
         self.screen = pygame.display.set_mode((757,757))
-        self.screen.fill("grey")
+        self.screen.fill("black")
         self.width = 800
         self.height = 800
         self.cell_width = 20
@@ -25,17 +25,18 @@ class Game_Of_Life:
         self.living = "white"
         self.dead = (44,44,44)
 
-        self.grid = np.random.randint(0, 2, size=(36, 36), dtype=bool)
+        # self.grid = np.random.randint(0, 2, size=(36, 36), dtype=bool)
 
-        # self.grid = []
+        self.grid = []
 
-        # for row in range(36):
-        #     self.grid.append([])
-        #     for col in range(36):
-        #         self.grid[row].append(0)
+        for row in range(36):
+            self.grid.append([])
+            for col in range(36):
+                self.grid[row].append(0)
 
     def run(self):
         self.draw_grid()
+        self.update_grid()
 
     def draw_grid(self):
         for row in range(1, 35):
@@ -55,25 +56,28 @@ class Game_Of_Life:
                                         self.cell_width,
                                         self.cell_height])
 
-
-    def resurrect(self):
-        click = pygame.mouse.get_pos()
-        print(click)
-        row = int(click[1]/(self.cell_height + self.margin))
-        col = int(click[0]/(self.cell_width + self.margin))
-        if self.grid[row][col] == 0:
-            self.grid[row][col] = 1
-        else:
-            self.grid[row][col] = 0
-        print(f"Row: {row}, Column: {col}")
-
     def update_grid(self):
         new_grid = self.grid.copy()
-        for row in range(new_grid.shape[0]):
-            for col in range(new_grid.shape[1]):
-                new_grid[row, col] = self.update_cell(row, col)
-    
+        for row in range(1, 35):
+            for col in range(1, 35):
+                new_grid[row][col] = self.update_cell(row, col)
         self.grid = new_grid
+
+    def update_cell(self, row, col):
+        current_state = self.grid[row][col]
+        neighbors = (self.grid[row - 1][col - 1], self.grid[row - 1][col], self.grid[row - 1][col + 1],
+                    self.grid[row][col - 1], self.grid[row][col + 1], self.grid[row + 1][col - 1],
+                    self.grid[row + 1][col], self.grid[row + 1][col + 1])
+        neighbors_count = sum(neighbors)
+        if current_state == 1: # <-- rules for living cells
+            if neighbors_count < 2  or neighbors_count > 3:
+                current_state == 0
+        else: # <-- rules for dead cells
+            if neighbors_count == 3:
+                current_state = 1
+        return current_state
+
+
 
 game_of_life = Game_Of_Life()
 
