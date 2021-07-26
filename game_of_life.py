@@ -67,6 +67,14 @@ class Game_Of_Life:
             self.grid[row][col] = 0
         print(f"Row: {row}, Column: {col}")
 
+    def update_grid(self):
+        new_grid = self.grid.copy()
+        for row in range(new_grid.shape[0]):
+            for col in range(new_grid.shape[1]):
+                new_grid[row, col] = self.update_cell(row, col)
+    
+        self.grid = new_grid
+
 game_of_life = Game_Of_Life()
 
 # # CELL VARIABLES - - - - - - - - - - - - - - - - -
@@ -86,13 +94,13 @@ while True:
         if event.type == pygame.QUIT: # <-- closes out window if event type is QUIT
             pygame.quit()
             exit()
-        # if event.type == pygame.MOUSEBUTTONDOWN: # <-- mark cells as living
-        #     column = int(event.pos[0]/(cell_width + margin))
-        #     row = int(event.pos[1]/(cell_height + margin))
-        #     if grid[row][column] == 0:
-        #         grid[row][column] = 1
-        #     else:
-        #         grid[row][column] = 0
+        if event.type == pygame.MOUSEBUTTONDOWN: # <-- mark cells as living
+            column = int(event.pos[0]/(cell_width + margin))
+            row = int(event.pos[1]/(cell_height + margin))
+            if game_of_life.grid[row][column] == 0:
+                game_of_life.grid[row][column] = 1
+            else:
+                game_of_life.grid[row][column] = 0
         #     # print(f"Row: {row}, Column: {column}")
         # if event.type == pygame.KEYDOWN:
         #     if event.key == pygame.K_SPACE: # <-- pause/unpause game
