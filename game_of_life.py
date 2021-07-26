@@ -1,5 +1,5 @@
 # # IMPORT MODULES - - - - - - - - - - - - - - - - - - -
-import pygame, math
+import pygame
 from sys import exit
 
 # # BASIC VARIABLES - - - - - - - - - - - - - - - - -
@@ -58,15 +58,15 @@ while True:
     for row in range(36):
         for column in range(36):
             color = (44,44,44)
-            if grid[row][column] == 1:
-                neighbor_count = 0
+            cell = grid[row][column]
+            if cell == 1:
                 color = "white"
-                if grid[row][column + 1] == 1:
-                    neighbor_count += 1
-                if grid[row][column - 1] == 1:
-                    neighbor_count += 1
+                neighbors = (grid[row][column + 1], grid[row][column - 1], grid[row - 1][column],
+                            grid[row + 1][column], grid[row - 1][column -1], grid[row - 1][column + 1],
+                            grid[row + 1][column - 1], grid[row + 1][column + 1])
+                neighbors_count = sum(neighbors)
                 if pause == False:
-                    if neighbor_count <= 2:
+                    if neighbors_count <=1  or neighbors_count >= 4:
                         grid[row][column] = 0
             pygame.draw.rect(screen,
                             color,
