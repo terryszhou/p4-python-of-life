@@ -95,24 +95,24 @@ while True:
             pygame.quit()
             exit()
         if event.type == pygame.MOUSEBUTTONDOWN: # <-- mark cells as living
-            column = int(event.pos[0]/(cell_width + margin))
-            row = int(event.pos[1]/(cell_height + margin))
-            if game_of_life.grid[row][column] == 0:
-                game_of_life.grid[row][column] = 1
+            col = int(event.pos[0]/(game_of_life.cell_width + game_of_life.margin))
+            row = int(event.pos[1]/(game_of_life.cell_height + game_of_life.margin))
+            if game_of_life.grid[row][col] == 0:
+                game_of_life.grid[row][col] = 1
             else:
-                game_of_life.grid[row][column] = 0
-        #     # print(f"Row: {row}, Column: {column}")
-        # if event.type == pygame.KEYDOWN:
-        #     if event.key == pygame.K_SPACE: # <-- pause/unpause game
-        #         if pause == False:
-        #             pause = True
-        #         else:
-        #             pause = False
-        #     if event.key == pygame.K_q: # <-- clear board if game is paused
-        #         if pause == True:
-        #             for row in range(36):
-        #                 for column in range(36):
-        #                     grid[row][column] = 0
+                game_of_life.grid[row][col] = 0
+            print(f"Row: {row}, Column: {col}")
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE: # <-- pause/unpause game
+                if pause == False:
+                    pause = True
+                else:
+                    pause = False
+            if event.key == pygame.K_q: # <-- clear board if game is paused
+                if pause == True:
+                    for row in range(36):
+                        for column in range(36):
+                            game_of_life.grid[row][column] = 0
 
     # # DRAW CELLS - - - - - - - - - - - - - - - - -
     # for row in range(1, 35):
