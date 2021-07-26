@@ -1,4 +1,17 @@
 '''
+# # TESTING - - - - - - - - - - - - - - - - -
+test_surface = pygame.Surface((200,200))
+test_surface.fill("red")
+test_rect = test_surface.get_rect(center = (0,300))
+
+# screen.blit(test_surface, test_rect)
+# if pause == False:
+#     test_rect.x += 5
+# else:
+#     test_rect.x = test_rect.x
+'''
+
+'''
 neighbors = []
 if row - 1 >= 0 and column + 1 <= 36:
     neighbors.append(grid[row - 1][column + 1])
