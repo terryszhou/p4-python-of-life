@@ -112,6 +112,16 @@ class Game_Of_Life:
         self.grid[7][6] = 1
         self.grid[6][5] = 1
 
+    def spawn_beacon(self):
+        self.grid[6][7] = 1
+        self.grid[7][7] = 1
+        self.grid[6][6] = 1
+        self.grid[7][6] = 1
+        self.grid[8][8] = 1
+        self.grid[8][9] = 1
+        self.grid[9][9] = 1
+        self.grid[9][8] = 1
+
     def run(self): # <-- runs functions above
         self.render_bg()
         self.draw_grid()
@@ -317,6 +327,9 @@ while True:
             if event.key == py.K_g:
                 audio.spawn.play()
                 game_of_life.spawn_glider()
+            if event.key == py.K_b:
+                audio.spawn.play()
+                game_of_life.spawn_beacon()
 
     # # RUN SIMULATION - - - - - - - - - - - - - - - - - - -
     game_of_life.run()
