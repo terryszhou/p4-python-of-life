@@ -25,10 +25,8 @@ class Game_Of_Life:
         self.margin = 1
         self.living = choice(["red", "orange", "green", "gold", "cornflowerblue", "purple", "deeppink", "black"])
         self.dead = (44,44,44)
-
         self.game_surf = pygame.Surface((screen_width,screen_height))
         self.game_surf.fill((0,0,0))
-
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols)) 
 
     def render_bg(self):
@@ -84,6 +82,16 @@ class Game_Of_Life:
 
 game_of_life = Game_Of_Life()
 
+run_sim_sound = pygame.mixer.Sound("audio/run_sim.wav")
+pause_sim_sound = pygame.mixer.Sound("audio/pause_sim.wav")
+click_sound = pygame.mixer.Sound("audio/click.wav")
+unclick_sound = pygame.mixer.Sound("audio/unclick.wav")
+
+run_sim_sound.set_volume(0.05)
+pause_sim_sound.set_volume(0.05)
+click_sound.set_volume(0.05)
+unclick_sound.set_volume(0.05)
+
 pause_surf = pygame.Surface((screen_width,screen_height), pygame.SRCALPHA)
 pause_surf.fill((0,0,0,180))
 
@@ -119,15 +127,19 @@ while True:
             col = int(event.pos[0]/(game_of_life.cell_width + game_of_life.margin))
             row = int(event.pos[1]/(game_of_life.cell_height + game_of_life.margin))
             if game_of_life.grid[row][col] == 0:
+                click_sound.play()
                 game_of_life.grid[row][col] = 1
             else:
+                unclick_sound.play()
                 game_of_life.grid[row][col] = 0
             print(f"Row: {row}, Column: {col}")
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE: # <-- pause/unpause game
                 if pause == False:
+                    pause_sim_sound.play()
                     pause = True
                 else:
+                    run_sim_sound.play()
                     pause = False
             if event.key == pygame.K_q: # <-- clear board if game is paused
                 if pause == True:
