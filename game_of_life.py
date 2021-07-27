@@ -16,6 +16,19 @@ screen_height = 757
 screen = pygame.display.set_mode((screen_width,screen_height))
 screen.fill("black")
 
+# class BG_Music:
+#     def __init__(self):
+#         self.bg_music = pygame.mixer.Sound("audio/dont-forget-me.mp3")
+#         self.bg_music.set_volume(0.05)
+#         self.paused = False
+
+#     def play_music(self):
+#         if self.paused == False:
+#             self.bg_music.play()
+#         else:
+
+
+
 class Game_Of_Life:
     def __init__(self):
         self.cell_width = 20
@@ -86,11 +99,13 @@ run_sim_sound = pygame.mixer.Sound("audio/run_sim.wav")
 pause_sim_sound = pygame.mixer.Sound("audio/pause_sim.wav")
 click_sound = pygame.mixer.Sound("audio/click.wav")
 unclick_sound = pygame.mixer.Sound("audio/unclick.wav")
+destroy_sound = pygame.mixer.Sound("audio/destroy.wav")
 
-run_sim_sound.set_volume(0.05)
+run_sim_sound.set_volume(0.03)
 pause_sim_sound.set_volume(0.05)
 click_sound.set_volume(0.05)
 unclick_sound.set_volume(0.05)
+destroy_sound.set_volume(0.05)
 
 pause_surf = pygame.Surface((screen_width,screen_height), pygame.SRCALPHA)
 pause_surf.fill((0,0,0,180))
@@ -111,10 +126,17 @@ rule_3_rect = rule_3_message.get_rect(center = (380,430))
 instruction_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
 instruction_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
 instruction_3 = my_font.render("<Q>, when paused, to clear board", True, "white")
+instruction_4 = my_font.render("<M> to pause/unpause music", True, "white")
 
 instruction_1_rect = instruction_1.get_rect(center = (380,600))
 instruction_2_rect = instruction_2.get_rect(center = (380,630))
 instruction_3_rect = instruction_3.get_rect(center = (380,660))
+instruction_4_rect = instruction_4.get_rect(center = (380,690))
+
+bg_music = pygame.mixer.music
+bg_music.load("audio/dont-forget-me.mp3")
+bg_music.set_volume(0.05)
+bg_music.play(-1)
 
 # # MAIN GAME LOOP - - - - - - - - - - - - - - - - -
 while True:
@@ -134,6 +156,11 @@ while True:
                 game_of_life.grid[row][col] = 0
             print(f"Row: {row}, Column: {col}")
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_m:
+                if bg_music.get_busy() == 1:
+                    bg_music.pause()
+                else:
+                    bg_music.unpause()
             if event.key == pygame.K_SPACE: # <-- pause/unpause game
                 if pause == False:
                     pause_sim_sound.play()
@@ -143,9 +170,10 @@ while True:
                     pause = False
             if event.key == pygame.K_q: # <-- clear board if game is paused
                 if pause == True:
+                    destroy_sound.play()
                     for row in range(36):
                         for column in range(36):
-                            game_of_life.grid[row][column] 
+                            game_of_life.grid[row][column] = 0
 
     game_of_life.run()
 
@@ -159,6 +187,7 @@ while True:
         screen.blit(instruction_1, instruction_1_rect)
         screen.blit(instruction_2, instruction_2_rect)
         screen.blit(instruction_3, instruction_3_rect)
+        screen.blit(instruction_4, instruction_4_rect)
 
     # # UPDATE CLOCK AND DISPLAY - - - - - - - - - - - - - - - - - - -
     pygame.display.update()
