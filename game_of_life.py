@@ -16,19 +16,7 @@ screen_height = 757
 screen = pygame.display.set_mode((screen_width,screen_height))
 screen.fill("black")
 
-# class BG_Music:
-#     def __init__(self):
-#         self.bg_music = pygame.mixer.Sound("audio/dont-forget-me.mp3")
-#         self.bg_music.set_volume(0.05)
-#         self.paused = False
-
-#     def play_music(self):
-#         if self.paused == False:
-#             self.bg_music.play()
-#         else:
-
-
-
+# # MAIN GAME CLASS - - - - - - - - - - - - - - - - -
 class Game_Of_Life:
     def __init__(self):
         self.cell_width = 20
@@ -93,35 +81,46 @@ class Game_Of_Life:
         self.draw_grid()
         self.update_grid()
 
+# # SOUNDS & MUSIC - - - - - - - - - - - - - - - - -
+class Audio:
+    def __init__(self):
+        self.run_sim = pygame.mixer.Sound("audio/run_sim.wav")
+        self.pause_sim = pygame.mixer.Sound("audio/pause_sim.wav")
+        self.click = pygame.mixer.Sound("audio/click.wav")
+        self.unclick = pygame.mixer.Sound("audio/unclick.wav")
+        self.destroy = pygame.mixer.Sound("audio/destroy.wav")
+
+        self.run_sim.set_volume(0.03)
+        self.pause_sim.set_volume(0.05)
+        self.click.set_volume(0.05)
+        self.unclick.set_volume(0.05)
+        self.destroy.set_volume(0.05)
+
+        self.bg_music = pygame.mixer.music
+        self.bg_music.load("audio/dont-forget-me.mp3")
+        self.bg_music.set_volume(0.05)
+        self.bg_music.play(-1)
+
+# # INSTANTIATE CLASS VARIABLES - - - - - - - - - - - - - - - - -
 game_of_life = Game_Of_Life()
+audio = Audio()
 
-run_sim_sound = pygame.mixer.Sound("audio/run_sim.wav")
-pause_sim_sound = pygame.mixer.Sound("audio/pause_sim.wav")
-click_sound = pygame.mixer.Sound("audio/click.wav")
-unclick_sound = pygame.mixer.Sound("audio/unclick.wav")
-destroy_sound = pygame.mixer.Sound("audio/destroy.wav")
-
-run_sim_sound.set_volume(0.03)
-pause_sim_sound.set_volume(0.05)
-click_sound.set_volume(0.05)
-unclick_sound.set_volume(0.05)
-destroy_sound.set_volume(0.05)
-
+# # PAUSE SCREEN RULES & INSTRUCTIONS - - - - - - - - - - - - - - - - -
 pause_surf = pygame.Surface((screen_width,screen_height), pygame.SRCALPHA)
 pause_surf.fill((0,0,0,180))
 
-title_message = title_font.render("TERRY'S GAME OF LIFE", False, "white")
-title_message_rect = title_message.get_rect(center = (380,100))
+title = title_font.render("TERRY'S GAME OF LIFE", False, "white")
+title_rect = title.get_rect(center = (380,100))
 
-rule_1_message = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", True, "white")
-rule_2_pt_1_message = my_font.render("2. Any dead cell with exact 3 live", False, "white")
-rule_2_pt_2_message = my_font.render("neighbors comes to life.", False, "white")
-rule_3_message = my_font.render("3. All other cells die.", False, "white")
+rule_1 = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", True, "white")
+rule_2_pt_1 = my_font.render("2. Any dead cell with exact 3 live", False, "white")
+rule_2_pt_2 = my_font.render("neighbors comes to life.", False, "white")
+rule_3 = my_font.render("3. All other cells die.", False, "white")
 
-rule_1_rect = rule_1_message.get_rect(center = (380,200))
-rule_2_pt_1_rect = rule_2_pt_1_message.get_rect(center = (380,300))
-rule_2_pt_2_rect = rule_2_pt_2_message.get_rect(center = (380,330))
-rule_3_rect = rule_3_message.get_rect(center = (380,430))
+rule_1_rect = rule_1.get_rect(center = (380,200))
+rule_2_pt_1_rect = rule_2_pt_1.get_rect(center = (380,300))
+rule_2_pt_2_rect = rule_2_pt_2.get_rect(center = (380,330))
+rule_3_rect = rule_3.get_rect(center = (380,430))
 
 instruction_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
 instruction_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
@@ -133,11 +132,6 @@ instruction_2_rect = instruction_2.get_rect(center = (380,630))
 instruction_3_rect = instruction_3.get_rect(center = (380,660))
 instruction_4_rect = instruction_4.get_rect(center = (380,690))
 
-bg_music = pygame.mixer.music
-bg_music.load("audio/dont-forget-me.mp3")
-bg_music.set_volume(0.05)
-bg_music.play(-1)
-
 # # MAIN GAME LOOP - - - - - - - - - - - - - - - - -
 while True:
     # # EVENT CONDITIONALS - - - - - - - - - - - - - - - - -
@@ -145,45 +139,47 @@ while True:
         if event.type == pygame.QUIT: # <-- closes out window if event type is QUIT
             pygame.quit()
             exit()
-        if event.type == pygame.MOUSEBUTTONDOWN: # <-- mark cells as living
+        if event.type == pygame.MOUSEBUTTONDOWN: # <-- mark cells as living or dead
             col = int(event.pos[0]/(game_of_life.cell_width + game_of_life.margin))
             row = int(event.pos[1]/(game_of_life.cell_height + game_of_life.margin))
             if game_of_life.grid[row][col] == 0:
-                click_sound.play()
+                audio.click.play()
                 game_of_life.grid[row][col] = 1
             else:
-                unclick_sound.play()
+                audio.unclick.play()
                 game_of_life.grid[row][col] = 0
-            print(f"Row: {row}, Column: {col}")
+            # print(f"Row: {row}, Column: {col}")
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_m:
-                if bg_music.get_busy() == 1:
-                    bg_music.pause()
+            if event.key == pygame.K_m: # <-- pause/unpause music
+                if audio.bg_music.get_busy() == 1:
+                    audio.bg_music.pause()
                 else:
-                    bg_music.unpause()
+                    audio.bg_music.unpause()
             if event.key == pygame.K_SPACE: # <-- pause/unpause game
                 if pause == False:
-                    pause_sim_sound.play()
+                    audio.pause_sim.play()
                     pause = True
                 else:
-                    run_sim_sound.play()
+                    audio.run_sim.play()
                     pause = False
             if event.key == pygame.K_q: # <-- clear board if game is paused
                 if pause == True:
-                    destroy_sound.play()
+                    audio.destroy.play()
                     for row in range(36):
                         for column in range(36):
                             game_of_life.grid[row][column] = 0
 
+    # # RUN GAME - - - - - - - - - - - - - - - - - - -
     game_of_life.run()
 
+    # # RENDER PAUSE SCREEN - - - - - - - - - - - - - - - - - - -
     if pause == True:
         screen.blit(pause_surf, (0,0))
-        screen.blit(title_message, title_message_rect)
-        screen.blit(rule_1_message, rule_1_rect)
-        screen.blit(rule_2_pt_1_message, rule_2_pt_1_rect)
-        screen.blit(rule_2_pt_2_message, rule_2_pt_2_rect)
-        screen.blit(rule_3_message, rule_3_rect)
+        screen.blit(title, title_rect)
+        screen.blit(rule_1, rule_1_rect)
+        screen.blit(rule_2_pt_1, rule_2_pt_1_rect)
+        screen.blit(rule_2_pt_2, rule_2_pt_2_rect)
+        screen.blit(rule_3, rule_3_rect)
         screen.blit(instruction_1, instruction_1_rect)
         screen.blit(instruction_2, instruction_2_rect)
         screen.blit(instruction_3, instruction_3_rect)
