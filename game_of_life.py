@@ -1,12 +1,11 @@
 # # IMPORT MODULES - - - - - - - - - - - - - - - - - - -
 import pygame
 import numpy as np
+from random import choice
 from sys import exit
 
 # # BASIC VARIABLES - - - - - - - - - - - - - - - - -
 pygame.init()
-screen = pygame.display.set_mode((757,757))
-screen.fill("grey")
 pygame.display.set_caption("Terry's Game of Life")
 clock = pygame.time.Clock()
 my_font = pygame.font.Font("fonts/Pixeltype.ttf", 50)
@@ -17,79 +16,82 @@ class Game_Of_Life:
     def __init__(self):
         self.screen = pygame.display.set_mode((757,757))
         self.screen.fill("black")
-        self.width = 800
-        self.height = 800
         self.cell_width = 20
         self.cell_height = 20
+        self.rows = 36
+        self.cols = 36
         self.margin = 1
-        self.living = "white"
+        self.living = choice(["red", "orange", "grey", "green", "yellow", "gold", "purple", "pink"])
         self.dead = (44,44,44)
+        self.pause = False
 
-        # self.grid = np.random.randint(0, 2, size=(36, 36), dtype=bool)
-
-        self.grid = []
-
-        for row in range(36):
-            self.grid.append([])
-            for col in range(36):
-                self.grid[row].append(0)
+        self.grid = np.random.randint(0, 2, size = (self.rows, self.cols)) 
 
     def run(self):
         self.draw_grid()
         self.update_grid()
 
     def draw_grid(self):
-        for row in range(1, 35):
-            for col in range(1, 35):
+        cell_status = ""
+        for row in range(1, self.rows - 1):
+            for col in range(1, self.cols - 1):
                 if self.grid[row][col] == 1:
-                    pygame.draw.rect(self.screen,
-                                        self.living,
-                                        [(self.margin + self.cell_width) * col + self.margin,
-                                        (self.margin + self.cell_height) * row + self.margin,
-                                        self.cell_width,
-                                        self.cell_height])
+                    cell_status = self.living
                 else:
-                    pygame.draw.rect(self.screen,
-                                        self.dead,
-                                        [(self.margin + self.cell_width) * col + self.margin,
-                                        (self.margin + self.cell_height) * row + self.margin,
-                                        self.cell_width,
-                                        self.cell_height])
+                    cell_status = self.dead
+                pygame.draw.rect(self.screen,
+                                    cell_status,
+                                    [(self.margin + self.cell_width) * col + self.margin,
+                                    (self.margin + self.cell_height) * row + self.margin,
+                                    self.cell_width,
+                                    self.cell_height])
 
     def update_grid(self):
-        new_grid = self.grid.copy()
-        for row in range(1, 35):
-            for col in range(1, 35):
-                new_grid[row][col] = self.update_cell(row, col)
-        self.grid = new_grid
+        if self.pause == False:
+            new_grid = self.grid.copy()
+            for row in range(self.rows):
+                for col in range(self.cols):
+                    new_grid[row][col] = self.update_cell(row, col)
+            self.grid = new_grid
 
     def update_cell(self, row, col):
         current_state = self.grid[row][col]
-        neighbors = (self.grid[row - 1][col - 1], self.grid[row - 1][col], self.grid[row - 1][col + 1],
-                    self.grid[row][col - 1], self.grid[row][col + 1], self.grid[row + 1][col - 1],
-                    self.grid[row + 1][col], self.grid[row + 1][col + 1])
-        neighbors_count = sum(neighbors)
-        if current_state == 1: # <-- rules for living cells
-            if neighbors_count < 2  or neighbors_count > 3:
-                current_state == 0
-        else: # <-- rules for dead cells
+        neighbors_count = 0
+        for i in range(-1,2):
+            for j in range(-1,2):
+                try:
+                    if i == 0 and j == 0:
+                        continue
+                    elif self.grid[row + i, col + j]:
+                        neighbors_count += 1
+                except:
+                    continue
+        if current_state == 1:
+            if neighbors_count < 2 or neighbors_count > 3:
+                current_state = 0
+        else:
             if neighbors_count == 3:
                 current_state = 1
         return current_state
 
-
+    # def update_cell(self, row, col):
+    #     current_state = self.grid[row][col]
+    #     neighbors = (self.grid[row - 1][column - 1], self.grid[row - 1][column], self.grid[row - 1][column + 1],
+    #                 self.grid[row][column - 1], self.grid[row][column + 1], self.grid[row + 1][column - 1],
+    #                 self.grid[row + 1][column], self.grid[row + 1][column + 1])
+    #     try:
+    #         neighbors_count = sum(neighbors)
+    #     except:
+    #         continue
+    #     if current_state == 1: # <-- rules for living cells
+    #         if neighbors_count < 2  or neighbors_count > 3:
+    #             current_state = 0
+    #     else: # <-- rules for dead cells
+    #         if neighbors_count == 3:
+    #             current_state = 1
+    #     return current_state
 
 game_of_life = Game_Of_Life()
-
-# # CELL VARIABLES - - - - - - - - - - - - - - - - -
-cell_width = 20
-cell_height = 20
-margin = 1
-grid = []
-for row in range(36):
-    grid.append([])
-    for column in range(36):
-        grid[row].append(0)
 
 # # MAIN GAME LOOP - - - - - - - - - - - - - - - - -
 while True:
@@ -108,42 +110,15 @@ while True:
             print(f"Row: {row}, Column: {col}")
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE: # <-- pause/unpause game
-                if pause == False:
-                    pause = True
+                if game_of_life.pause == False:
+                    game_of_life.pause = True
                 else:
-                    pause = False
+                    game_of_life.pause = False
             if event.key == pygame.K_q: # <-- clear board if game is paused
-                if pause == True:
+                if game_of_life.pause == True:
                     for row in range(36):
                         for column in range(36):
                             game_of_life.grid[row][column] = 0
-
-    # # DRAW CELLS - - - - - - - - - - - - - - - - -
-    # for row in range(1, 35):
-    #     for column in range(1, 35):
-    #         color = (44,44,44)
-    #         cell = grid[row][column]
-    #         neighbors = (grid[row - 1][column - 1], grid[row - 1][column], grid[row - 1][column + 1],
-    #                     grid[row][column - 1], grid[row][column + 1], grid[row + 1][column - 1],
-    #                     grid[row + 1][column], grid[row + 1][column + 1])
-    #         neighbors_count = sum(neighbors)
-    #         if pause == False: # <-- runs simulation if game is unpaused
-    #             if grid[row][column] == 1: # <-- rules for living cells
-    #                 color = "white"
-    #                 if neighbors_count < 2  or neighbors_count > 3:
-    #                     grid[row][column] = 0
-    #             else: # <-- rules for dead cells
-    #                 if neighbors_count == 3:
-    #                     grid[row][column] = 1
-    #         else: # <-- makes sure that living cells stay white even when paused
-    #             if grid[row][column] == 1:
-    #                 color = "white"
-    #         pygame.draw.rect(screen,
-    #                         color,
-    #                         [(margin + cell_width) * column + margin,
-    #                         (margin + cell_height) * row + margin,
-    #                         cell_width,
-    #                         cell_height]) # <-- pygame.draw.rect(surface, color, [left, top, width, height])
 
     # # UPDATE CLOCK AND DISPLAY - - - - - - - - - - - - - - - - - - -
     game_of_life.run()

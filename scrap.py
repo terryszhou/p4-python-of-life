@@ -1,4 +1,32 @@
 '''
+# for row in range(1, 35):
+#     for column in range(1, 35):
+#         color = (44,44,44)
+#         cell = grid[row][column]
+#         neighbors = (grid[row - 1][column - 1], grid[row - 1][column], grid[row - 1][column + 1],
+#                     grid[row][column - 1], grid[row][column + 1], grid[row + 1][column - 1],
+#                     grid[row + 1][column], grid[row + 1][column + 1])
+#         neighbors_count = sum(neighbors)
+#         if pause == False: # <-- runs simulation if game is unpaused
+#             if grid[row][column] == 1: # <-- rules for living cells
+#                 color = "white"
+#                 if neighbors_count < 2  or neighbors_count > 3:
+#                     grid[row][column] = 0
+#             else: # <-- rules for dead cells
+#                 if neighbors_count == 3:
+#                     grid[row][column] = 1
+#         else: # <-- makes sure that living cells stay white even when paused
+#             if grid[row][column] == 1:
+#                 color = "white"
+#         pygame.draw.rect(screen,
+#                         color,
+#                         [(margin + cell_width) * column + margin,
+#                         (margin + cell_height) * row + margin,
+#                         cell_width,
+#                         cell_height]) # <-- pygame.draw.rect(surface, color, [left, top, width, height])
+'''
+
+'''
 # # TESTING - - - - - - - - - - - - - - - - -
 test_surface = pygame.Surface((200,200))
 test_surface.fill("red")
