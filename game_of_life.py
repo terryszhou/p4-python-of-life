@@ -17,6 +17,7 @@ title_font = py.font.Font("fonts/Pixeltype.ttf", 75)
 pause = True
 generation = 0
 
+# # DEFAULT RULESET STATUSES - - - - - - - - - - - - - - - - -
 game_of_life_rules = True
 life_without_death_rules = False
 maze_rules = False
@@ -74,7 +75,7 @@ class Game_Of_Life:
                         neighbors_count += 1
                 except IndexError:
                     continue
-        if game_of_life_rules == True:
+        if game_of_life_rules == True: # <-- Game of Life rules
             if current_state == 1:
                 if neighbors_count < 2 or neighbors_count > 3:
                     current_state = 0
@@ -82,12 +83,12 @@ class Game_Of_Life:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if life_without_death_rules == True:
+        if life_without_death_rules == True: # <-- Life Without Death rules
             if current_state == 0:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if maze_rules == True:
+        if maze_rules == True: # <-- Maze rules
             if current_state == 1:
                 if neighbors_count < 1 or neighbors_count > 5:
                     current_state = 0
@@ -95,7 +96,7 @@ class Game_Of_Life:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if high_life_rules == True:
+        if high_life_rules == True: # <-- High Life rules
             if current_state == 1:
                 if neighbors_count < 2 or neighbors_count > 3:
                     current_state = 0
@@ -104,12 +105,19 @@ class Game_Of_Life:
                     current_state = 1
             return current_state
 
+    def spawn_glider(self):
+        self.grid[5][7] = 1
+        self.grid[6][7] = 1
+        self.grid[7][7] = 1
+        self.grid[7][6] = 1
+        self.grid[6][5] = 1
+
     def run(self): # <-- runs functions above
         self.render_bg()
         self.draw_grid()
         self.update_grid()
 
-# # SOUNDS & MUSIC - - - - - - - - - - - - - - - - -
+# # SOUNDS & MUSIC CLASS - - - - - - - - - - - - - - - - -
 class Audio:
     def __init__(self):
         self.run_sim = py.mixer.Sound("audio/run_sim.wav")
@@ -118,6 +126,7 @@ class Audio:
         self.unclick = py.mixer.Sound("audio/unclick.wav")
         self.destroy = py.mixer.Sound("audio/destroy.wav")
         self.switch_mode = py.mixer.Sound("audio/switch_mode.wav")
+        self.spawn = py.mixer.Sound("audio/spawn.wav")
 
         self.run_sim.set_volume(0.06)
         self.pause_sim.set_volume(0.1)
@@ -125,51 +134,51 @@ class Audio:
         self.unclick.set_volume(0.1)
         self.destroy.set_volume(0.1)
         self.switch_mode.set_volume(0.1)
+        self.spawn.set_volume(0.1)
 
         self.bg_music = py.mixer.music
         self.bg_music.load("audio/dont-forget-me.mp3")
         self.bg_music.set_volume(0.1)
         self.bg_music.play(-1) # <-- autoplays background music on game load
 
-# # PAUSE SCREEN - - - - - - - - - - - - - - - - -
+# # PAUSE SCREEN CLASS - - - - - - - - - - - - - - - - -
 class Pause_Screen:
     def __init__(self):
         self.pause_surf = py.Surface((screen_width,screen_height), py.SRCALPHA)
         self.pause_surf.fill((0,0,0,180))
 
         # # GAME OF LIFE DISPLAY - - - - - - - - - - - - - - -
-        self.title_1 = title_font.render("TERRY'S GAME OF LIFE", False, "white")
-        self.title_1_rect = self.title_1.get_rect(center = (380,100))
-
-        self.rule_1 = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", True, "white")
-        self.rule_2_pt_1 = my_font.render("2. Any dead cell with exactly 3 live", False, "white")
+        self.gol_title = title_font.render("TERRY'S GAME OF LIFE", False, "cornflowerblue")
+        self.rule_1 = my_font.render("1. Any living cell with 2 or 3 living neighbors survives.", True, "white")
+        self.rule_2_pt_1 = my_font.render("2. Any dead cell with exactly 3 living", False, "white")
         self.rule_2_pt_2 = my_font.render("neighbors comes to life.", False, "white")
         self.rule_3 = my_font.render("3. All other cells die.", False, "white")
 
+        self.gol_title_rect = self.gol_title.get_rect(center = (380,100))
         self.rule_1_rect = self.rule_1.get_rect(center = (380,200))
         self.rule_2_pt_1_rect = self.rule_2_pt_1.get_rect(center = (380,300))
         self.rule_2_pt_2_rect = self.rule_2_pt_2.get_rect(center = (380,330))
         self.rule_3_rect = self.rule_3.get_rect(center = (380,430))
 
         # # LIFE WITHOUT DEATH DISPLAY - - - - - - - - - - - - - - -
-        self.title_2 = title_font.render("TERRY'S LIFE WITHOUT DEATH", False, "white")
-        self.title_2_rect = self.title_2.get_rect(center = (380,100))
-
+        self.lwd_title = title_font.render("TERRY'S LIFE WITHOUT DEATH", False, "red")
         self.lwd_rule_1 = my_font.render("1. Cells do not die.", True, "white")
+        
+        self.lwd_title_rect = self.lwd_title.get_rect(center = (380,100))
         self.lwd_rule_1_rect = self.lwd_rule_1.get_rect(center = (380,200))
 
         # # MAZE DISPLAY - - - - - - - - - - - - - - -
-        self.title_3 = title_font.render("TERRY'S MAZE", False, "white")
-        self.title_3_rect = self.title_3.get_rect(center = (380,100))
+        self.mz_title = title_font.render("TERRY'S MAZE", False, "green")
+        self.mz_rule_1 = my_font.render("1. Any live cell with between 1 and 5 living neighbors survives.", True, "white")
 
-        self.m_rule_1 = my_font.render("1. Any live cell with between 1 and 5 live neighbors survives.", True, "white")
-        self.m_rule_1_rect = self.m_rule_1.get_rect(center = (380,200))
+        self.mz_title_rect = self.mz_title.get_rect(center = (380,100))
+        self.mz_rule_1_rect = self.mz_rule_1.get_rect(center = (380,200))
 
         # # HIGH LIFE DISPLAY
-        self.title_4 = title_font.render("TERRY'S HIGH LIFE", False, "white")
-        self.title_4_rect = self.title_4.get_rect(center = (380,100))
+        self.hl_title = title_font.render("TERRY'S HIGH LIFE", False, "gold")
+        self.hl_rule_2_pt_1 = my_font.render("2. Any dead cell with 3 or 6 living", False, "white")
 
-        self.hl_rule_2_pt_1 = my_font.render("2. Any dead cell with 3 or 6 live", False, "white")
+        self.hl_title_rect = self.hl_title.get_rect(center = (380,100))
         self.h1_rule_2_pt_1_rect = self.hl_rule_2_pt_1.get_rect(center = (380,300))
 
         # # GAME INSTRUCTIONS - - - - - - - - - - - - - - -
@@ -194,24 +203,24 @@ class Pause_Screen:
             screen.blit(self.instruction_4, self.instruction_4_rect)
             screen.blit(self.instruction_5, self.instruction_5_rect)
             if game_of_life_rules == True:
-                screen.blit(self.title_1, self.title_1_rect)
+                screen.blit(self.gol_title, self.gol_title_rect)
                 screen.blit(self.rule_1, self.rule_1_rect)
                 screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
                 screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
                 screen.blit(self.rule_3, self.rule_3_rect)
             elif life_without_death_rules == True:
-                screen.blit(self.title_2, self.title_2_rect)
+                screen.blit(self.lwd_title, self.lwd_title_rect)
                 screen.blit(self.lwd_rule_1, self.lwd_rule_1_rect)
                 screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
                 screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
             elif maze_rules == True:
-                screen.blit(self.title_3, self.title_3_rect)
-                screen.blit(self.m_rule_1, self.m_rule_1_rect)
+                screen.blit(self.mz_title, self.mz_title_rect)
+                screen.blit(self.mz_rule_1, self.mz_rule_1_rect)
                 screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
                 screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
                 screen.blit(self.rule_3, self.rule_3_rect)
             elif high_life_rules == True:
-                screen.blit(self.title_4, self.title_4_rect)
+                screen.blit(self.hl_title, self.hl_title_rect)
                 screen.blit(self.rule_1, self.rule_1_rect)
                 screen.blit(self.hl_rule_2_pt_1, self.h1_rule_2_pt_1_rect)
                 screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
@@ -252,7 +261,7 @@ while True:
             else:
                 audio.unclick.play()
                 game_of_life.grid[row][col] = 0
-            # print(f"Row: {row}, Column: {col}")
+            print(f"Row: {row}, Column: {col}")
         if event.type == py.KEYDOWN:
             if event.key == py.K_m: # <-- pause/unpause music
                 if audio.bg_music.get_busy() == 1:
@@ -305,6 +314,9 @@ while True:
                     life_without_death_rules = False
                     maze_rules = False
                     high_life_rules = True
+            if event.key == py.K_g:
+                audio.spawn.play()
+                game_of_life.spawn_glider()
 
     # # RUN SIMULATION - - - - - - - - - - - - - - - - - - -
     game_of_life.run()
