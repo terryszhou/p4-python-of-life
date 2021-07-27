@@ -1,4 +1,22 @@
 '''
+# def update_cell(self, row, col):
+#     current_state = self.grid[row][col]
+#     neighbors = (self.grid[row - 1][column - 1], self.grid[row - 1][column], self.grid[row - 1][column + 1],
+#                 self.grid[row][column - 1], self.grid[row][column + 1], self.grid[row + 1][column - 1],
+#                 self.grid[row + 1][column], self.grid[row + 1][column + 1])
+#     try:
+#         neighbors_count = sum(neighbors)
+#     except:
+#         continue
+#     if current_state == 1: # <-- rules for living cells
+#         if neighbors_count < 2  or neighbors_count > 3:
+#             current_state = 0
+#     else: # <-- rules for dead cells
+#         if neighbors_count == 3:
+#             current_state = 1
+#     return current_state
+'''
+'''
 # for row in range(1, 35):
 #     for column in range(1, 35):
 #         color = (44,44,44)
