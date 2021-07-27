@@ -9,8 +9,11 @@ pygame.init()
 pygame.display.set_caption("Terry's Game of Life")
 clock = pygame.time.Clock()
 my_font = pygame.font.Font("fonts/Pixeltype.ttf", 35)
-pause = False
-screen = pygame.display.set_mode((757,757))
+title_font = pygame.font.Font("fonts/Pixeltype.ttf", 75)
+pause = True
+screen_width = 757
+screen_height = 757
+screen = pygame.display.set_mode((screen_width,screen_height))
 screen.fill("black")
 
 class Game_Of_Life:
@@ -22,9 +25,8 @@ class Game_Of_Life:
         self.margin = 1
         self.living = choice(["red", "orange", "green", "gold", "cornflowerblue", "purple", "deeppink", "black"])
         self.dead = (44,44,44)
-        self.pause = False
 
-        self.game_surf = pygame.Surface((757,757))
+        self.game_surf = pygame.Surface((screen_width,screen_height))
         self.game_surf.fill((0,0,0))
 
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols)) 
@@ -48,7 +50,7 @@ class Game_Of_Life:
                                     self.cell_height],5,4)
 
     def update_grid(self):
-        if self.pause == False:
+        if pause == False:
             new_grid = self.grid.copy()
             for row in range(self.rows):
                 for col in range(self.cols):
@@ -82,18 +84,29 @@ class Game_Of_Life:
 
 game_of_life = Game_Of_Life()
 
-pause_surf = pygame.Surface((757,757), pygame.SRCALPHA)
+pause_surf = pygame.Surface((screen_width,screen_height), pygame.SRCALPHA)
 pause_surf.fill((0,0,0,180))
 
-rule_1_message = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", False, "white")
+title_message = title_font.render("TERRY'S GAME OF LIFE", False, "white")
+title_message_rect = title_message.get_rect(center = (380,100))
+
+rule_1_message = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", True, "white")
 rule_2_pt_1_message = my_font.render("2. Any dead cell with exact 3 live", False, "white")
 rule_2_pt_2_message = my_font.render("neighbors comes to life.", False, "white")
 rule_3_message = my_font.render("3. All other cells die.", False, "white")
 
 rule_1_rect = rule_1_message.get_rect(center = (380,200))
-rule_2_pt_1_rect = rule_2_pt_1_message.get_rect(center = (380,350))
-rule_2_pt_2_rect = rule_2_pt_2_message.get_rect(center = (380,400))
-rule_3_rect = rule_3_message.get_rect(center = (380,550))
+rule_2_pt_1_rect = rule_2_pt_1_message.get_rect(center = (380,300))
+rule_2_pt_2_rect = rule_2_pt_2_message.get_rect(center = (380,330))
+rule_3_rect = rule_3_message.get_rect(center = (380,430))
+
+instruction_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
+instruction_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
+instruction_3 = my_font.render("<Q>, when paused, to clear board", True, "white")
+
+instruction_1_rect = instruction_1.get_rect(center = (380,600))
+instruction_2_rect = instruction_2.get_rect(center = (380,630))
+instruction_3_rect = instruction_3.get_rect(center = (380,660))
 
 # # MAIN GAME LOOP - - - - - - - - - - - - - - - - -
 while True:
@@ -112,24 +125,28 @@ while True:
             print(f"Row: {row}, Column: {col}")
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE: # <-- pause/unpause game
-                if game_of_life.pause == False:
-                    game_of_life.pause = True
+                if pause == False:
+                    pause = True
                 else:
-                    game_of_life.pause = False
+                    pause = False
             if event.key == pygame.K_q: # <-- clear board if game is paused
-                if game_of_life.pause == True:
+                if pause == True:
                     for row in range(36):
                         for column in range(36):
                             game_of_life.grid[row][column] 
 
     game_of_life.run()
 
-    if game_of_life.pause == True:
+    if pause == True:
         screen.blit(pause_surf, (0,0))
+        screen.blit(title_message, title_message_rect)
         screen.blit(rule_1_message, rule_1_rect)
         screen.blit(rule_2_pt_1_message, rule_2_pt_1_rect)
         screen.blit(rule_2_pt_2_message, rule_2_pt_2_rect)
         screen.blit(rule_3_message, rule_3_rect)
+        screen.blit(instruction_1, instruction_1_rect)
+        screen.blit(instruction_2, instruction_2_rect)
+        screen.blit(instruction_3, instruction_3_rect)
 
     # # UPDATE CLOCK AND DISPLAY - - - - - - - - - - - - - - - - - - -
     pygame.display.update()
