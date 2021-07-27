@@ -27,19 +27,6 @@ class Game_Of_Life:
         self.game_surf = pygame.Surface((757,757))
         self.game_surf.fill((0,0,0))
 
-        self.pause_surf = pygame.Surface((757,757), pygame.SRCALPHA)
-        self.pause_surf.fill((0,0,0,180))
-
-        self.rule_1_message = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", False, "white")
-        self.rule_2_pt_1_message = my_font.render("2. Any dead cell with exact 3 live", False, "white")
-        self.rule_2_pt_2_message = my_font.render("neighbors comes to life.", False, "white")
-        self.rule_3_message = my_font.render("3. All other cells die.", False, "white")
-
-        self.rule_1_rect = self.rule_1_message.get_rect(center = (380,200))
-        self.rule_2_pt_1_rect = self.rule_2_pt_1_message.get_rect(center = (380,350))
-        self.rule_2_pt_2_rect = self.rule_2_pt_2_message.get_rect(center = (380,400))
-        self.rule_3_rect = self.rule_3_message.get_rect(center = (380,550))
-
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols)) 
 
     def render_bg(self):
@@ -59,12 +46,6 @@ class Game_Of_Life:
                                     (self.margin + self.cell_height) * row + self.margin,
                                     self.cell_width,
                                     self.cell_height],5,4)
-        if self.pause == True:
-            screen.blit(self.pause_surf, (0,0))
-            screen.blit(self.rule_1_message, self.rule_1_rect)
-            screen.blit(self.rule_2_pt_1_message, self.rule_2_pt_1_rect)
-            screen.blit(self.rule_2_pt_2_message, self.rule_2_pt_2_rect)
-            screen.blit(self.rule_3_message, self.rule_3_rect)
 
     def update_grid(self):
         if self.pause == False:
@@ -101,6 +82,19 @@ class Game_Of_Life:
 
 game_of_life = Game_Of_Life()
 
+pause_surf = pygame.Surface((757,757), pygame.SRCALPHA)
+pause_surf.fill((0,0,0,180))
+
+rule_1_message = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", False, "white")
+rule_2_pt_1_message = my_font.render("2. Any dead cell with exact 3 live", False, "white")
+rule_2_pt_2_message = my_font.render("neighbors comes to life.", False, "white")
+rule_3_message = my_font.render("3. All other cells die.", False, "white")
+
+rule_1_rect = rule_1_message.get_rect(center = (380,200))
+rule_2_pt_1_rect = rule_2_pt_1_message.get_rect(center = (380,350))
+rule_2_pt_2_rect = rule_2_pt_2_message.get_rect(center = (380,400))
+rule_3_rect = rule_3_message.get_rect(center = (380,550))
+
 # # MAIN GAME LOOP - - - - - - - - - - - - - - - - -
 while True:
     # # EVENT CONDITIONALS - - - - - - - - - - - - - - - - -
@@ -126,9 +120,16 @@ while True:
                 if game_of_life.pause == True:
                     for row in range(36):
                         for column in range(36):
-                            game_of_life.grid[row][column] = 0
-    
+                            game_of_life.grid[row][column] 
+
     game_of_life.run()
+
+    if game_of_life.pause == True:
+        screen.blit(pause_surf, (0,0))
+        screen.blit(rule_1_message, rule_1_rect)
+        screen.blit(rule_2_pt_1_message, rule_2_pt_1_rect)
+        screen.blit(rule_2_pt_2_message, rule_2_pt_2_rect)
+        screen.blit(rule_3_message, rule_3_rect)
 
     # # UPDATE CLOCK AND DISPLAY - - - - - - - - - - - - - - - - - - -
     pygame.display.update()
