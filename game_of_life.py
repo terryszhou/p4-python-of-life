@@ -19,6 +19,7 @@ generation = 0
 
 game_of_life_rules = True
 life_without_death_rules = False
+maze_rules = False
 
 # # MAIN GAME CLASS - - - - - - - - - - - - - - - - -
 class Game_Of_Life:
@@ -85,6 +86,14 @@ class Game_Of_Life:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
+        if maze_rules == True:
+            if current_state == 1:
+                if neighbors_count < 1 or neighbors_count > 5:
+                    current_state = 0
+            else: 
+                if neighbors_count == 3:
+                    current_state = 1
+            return current_state
 
     def run(self): # <-- runs functions above
         self.render_bg()
@@ -136,14 +145,21 @@ class Pause_Screen:
         self.title_2_rect = self.title_2.get_rect(center = (380,100))
 
         self.lwd_rule_1 = my_font.render("1. Cells do not die.", True, "white")
-        self.lwd_rule_1_rect = self.lwd_rule_1.get_rect(center = (380, 200))
+        self.lwd_rule_1_rect = self.lwd_rule_1.get_rect(center = (380,200))
+
+        # # MAZE DISPLAY - - - - - - - - - - - - - - -
+        self.title_3 = title_font.render("TERRY'S MAZE", False, "white")
+        self.title_3_rect = self.title_3.get_rect(center = (380,100))
+
+        self.m_rule_1 = my_font.render("1. Any live cell with between 1 and 5 live neighbors survives.", True, "white")
+        self.m_rule_1_rect = self.m_rule_1.get_rect(center = (380,200))
 
         # # GAME INSTRUCTIONS - - - - - - - - - - - - - - -
         self.instruction_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
         self.instruction_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
         self.instruction_3 = my_font.render("<Q>, when paused, to clear board", True, "white")
         self.instruction_4 = my_font.render("<M> to pause/unpause music", True, "white")
-        self.instruction_5 = my_font.render("<UP ARROW>, when paused, to change rulesets", True, "white")
+        self.instruction_5 = my_font.render("<ARROW KEYS>, when paused, to change rulesets", True, "white")
 
         self.instruction_1_rect = self.instruction_1.get_rect(center = (380,570))
         self.instruction_2_rect = self.instruction_2.get_rect(center = (380,600))
@@ -170,6 +186,12 @@ class Pause_Screen:
                 screen.blit(self.lwd_rule_1, self.lwd_rule_1_rect)
                 screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
                 screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
+            elif maze_rules == True:
+                screen.blit(self.title_3, self.title_3_rect)
+                screen.blit(self.m_rule_1, self.m_rule_1_rect)
+                screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
+                screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
+                screen.blit(self.rule_3, self.rule_3_rect)
 
     def run(self):
         self.draw_pause()
@@ -189,18 +211,6 @@ def display_generation():
         return int(clock.tick(10)/100)
     else:
         return 0
-
-def change_game_mode():
-    global game_of_life_rules, life_without_death_rules, pause
-    if pause == True:
-        title = title_font.render(f"TERRY'S {game_mode}", False, "white")
-        title_rect = title.get_rect(center = (380,100))
-        screen.blit(title, title_rect)
-        if life_without_death_rules == True:
-            return "LIFE WITHOUT DEATH"
-        else:
-            return "GAME OF LIFE"
-
 
 # # MAIN GAME LOOP - - - - - - - - - - - - - - - - -
 while True:
@@ -239,26 +249,33 @@ while True:
                     for row in range(game_of_life.rows):
                         for column in range(game_of_life.cols):
                             game_of_life.grid[row][column] = 0
-            if event.key == py.K_UP:
+            if event.key == py.K_UP: # <-- switch to Game of Life rules
                 if pause == True:
                     generation = 0
-                    if game_of_life_rules == True:
-                        game_of_life_rules = False
-                        life_without_death_rules = True
-                    else:
-                        game_of_life_rules = True
-                        life_without_death_rules = False
-                    # print(f"Game of Life is {game_of_life.game_of_life}, Life Without Death is {game_of_life.life_without_death}")
+                    game_of_life_rules = True
+                    life_without_death_rules = False
+                    maze_rules = False
+            if event.key == py.K_LEFT:
+                if pause == True: # <-- switch to Life Without Death rules
+                    generation = 0
+                    game_of_life_rules = False
+                    life_without_death_rules = True
+                    maze_rules = False
+            if event.key == py.K_RIGHT:
+                if pause == True: # <-- switch to Maze rules
+                    generation = 0
+                    game_of_life_rules = False
+                    life_without_death_rules = False
+                    maze_rules = True
 
     # # RUN SIMULATION - - - - - - - - - - - - - - - - - - -
     game_of_life.run()
     pause_screen.run()
-    # game_mode = change_game_mode()
     generation += display_generation()
 
     # # UPDATE CLOCK AND DISPLAY - - - - - - - - - - - - - - - - - - -
     py.display.flip()
-    clock.tick(10)
+    clock.tick(60)
 
 # # EMERGENCY EXIT - - - - - - - - - - - - - - - - -
 py.quit()
