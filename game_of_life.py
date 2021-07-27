@@ -17,6 +17,9 @@ title_font = py.font.Font("fonts/Pixeltype.ttf", 75)
 pause = True
 generation = 0
 
+game_of_life_rules = True
+life_without_death_rules = False
+
 # # MAIN GAME CLASS - - - - - - - - - - - - - - - - -
 class Game_Of_Life:
     def __init__(self):
@@ -29,7 +32,7 @@ class Game_Of_Life:
         self.dead = (44,44,44)
         self.game_surf = py.Surface((screen_width,screen_height))
         self.game_surf.fill((0,0,0))
-        self.grid = np.random.randint(0,2, size = (self.rows, self.cols)) 
+        self.grid = np.random.randint(0,2, size = (self.rows, self.cols))
 
     def render_bg(self):
         screen.blit(self.game_surf, (0,0))
@@ -69,18 +72,19 @@ class Game_Of_Life:
                         neighbors_count += 1
                 except IndexError:
                     continue
-        if current_state == 1:
-            if neighbors_count < 2 or neighbors_count > 3:
-                current_state = 0
-        else:
-            if neighbors_count == 3:
-                current_state = 1
-        return current_state
-
-        # if current_state == 0:
-        #     if neighbors_count == 3:
-        #         current_state = 1
-        # return current_state
+        if game_of_life_rules == True:
+            if current_state == 1:
+                if neighbors_count < 2 or neighbors_count > 3:
+                    current_state = 0
+            else:
+                if neighbors_count == 3:
+                    current_state = 1
+            return current_state
+        if life_without_death_rules == True:
+            if current_state == 0:
+                if neighbors_count == 3:
+                    current_state = 1
+            return current_state
 
     def run(self): # <-- runs functions above
         self.render_bg()
@@ -113,8 +117,9 @@ class Pause_Screen:
         self.pause_surf = py.Surface((screen_width,screen_height), py.SRCALPHA)
         self.pause_surf.fill((0,0,0,180))
 
-        self.title = title_font.render("TERRY'S GAME OF LIFE", False, "white")
-        self.title_rect = self.title.get_rect(center = (380,100))
+        # # GAME OF LIFE DISPLAY - - - - - - - - - - - - - - -
+        self.title_1 = title_font.render("TERRY'S GAME OF LIFE", False, "white")
+        self.title_1_rect = self.title_1.get_rect(center = (380,100))
 
         self.rule_1 = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", True, "white")
         self.rule_2_pt_1 = my_font.render("2. Any dead cell with exact 3 live", False, "white")
@@ -126,28 +131,45 @@ class Pause_Screen:
         self.rule_2_pt_2_rect = self.rule_2_pt_2.get_rect(center = (380,330))
         self.rule_3_rect = self.rule_3.get_rect(center = (380,430))
 
+        # # LIFE WITHOUT DEATH DISPLAY - - - - - - - - - - - - - - -
+        self.title_2 = title_font.render("TERRY'S LIFE WITHOUT DEATH", False, "white")
+        self.title_2_rect = self.title_2.get_rect(center = (380,100))
+
+        self.lwd_rule_1 = my_font.render("1. Cells do not die.", True, "white")
+        self.lwd_rule_1_rect = self.lwd_rule_1.get_rect(center = (380, 200))
+
+        # # GAME INSTRUCTIONS - - - - - - - - - - - - - - -
         self.instruction_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
         self.instruction_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
         self.instruction_3 = my_font.render("<Q>, when paused, to clear board", True, "white")
         self.instruction_4 = my_font.render("<M> to pause/unpause music", True, "white")
+        self.instruction_5 = my_font.render("<UP ARROW>, when paused, to change rulesets", True, "white")
 
-        self.instruction_1_rect = self.instruction_1.get_rect(center = (380,600))
-        self.instruction_2_rect = self.instruction_2.get_rect(center = (380,630))
-        self.instruction_3_rect = self.instruction_3.get_rect(center = (380,660))
-        self.instruction_4_rect = self.instruction_4.get_rect(center = (380,690))
+        self.instruction_1_rect = self.instruction_1.get_rect(center = (380,570))
+        self.instruction_2_rect = self.instruction_2.get_rect(center = (380,600))
+        self.instruction_3_rect = self.instruction_3.get_rect(center = (380,630))
+        self.instruction_4_rect = self.instruction_4.get_rect(center = (380,660))
+        self.instruction_5_rect = self.instruction_5.get_rect(center = (380,690))
 
     def draw_pause(self): # <-- draws variables above if game is paused.
         if pause == True:
             screen.blit(self.pause_surf, (0,0))
-            screen.blit(self.title, self.title_rect)
-            screen.blit(self.rule_1, self.rule_1_rect)
-            screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
-            screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
-            screen.blit(self.rule_3, self.rule_3_rect)
             screen.blit(self.instruction_1, self.instruction_1_rect)
             screen.blit(self.instruction_2, self.instruction_2_rect)
             screen.blit(self.instruction_3, self.instruction_3_rect)
             screen.blit(self.instruction_4, self.instruction_4_rect)
+            screen.blit(self.instruction_5, self.instruction_5_rect)
+            if game_of_life_rules == True:
+                screen.blit(self.title_1, self.title_1_rect)
+                screen.blit(self.rule_1, self.rule_1_rect)
+                screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
+                screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
+                screen.blit(self.rule_3, self.rule_3_rect)
+            elif life_without_death_rules == True:
+                screen.blit(self.title_2, self.title_2_rect)
+                screen.blit(self.lwd_rule_1, self.lwd_rule_1_rect)
+                screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
+                screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
 
     def run(self):
         self.draw_pause()
@@ -167,6 +189,18 @@ def display_generation():
         return int(clock.tick(10)/100)
     else:
         return 0
+
+def change_game_mode():
+    global game_of_life_rules, life_without_death_rules, pause
+    if pause == True:
+        title = title_font.render(f"TERRY'S {game_mode}", False, "white")
+        title_rect = title.get_rect(center = (380,100))
+        screen.blit(title, title_rect)
+        if life_without_death_rules == True:
+            return "LIFE WITHOUT DEATH"
+        else:
+            return "GAME OF LIFE"
+
 
 # # MAIN GAME LOOP - - - - - - - - - - - - - - - - -
 while True:
@@ -205,10 +239,21 @@ while True:
                     for row in range(game_of_life.rows):
                         for column in range(game_of_life.cols):
                             game_of_life.grid[row][column] = 0
+            if event.key == py.K_UP:
+                if pause == True:
+                    generation = 0
+                    if game_of_life_rules == True:
+                        game_of_life_rules = False
+                        life_without_death_rules = True
+                    else:
+                        game_of_life_rules = True
+                        life_without_death_rules = False
+                    # print(f"Game of Life is {game_of_life.game_of_life}, Life Without Death is {game_of_life.life_without_death}")
 
     # # RUN SIMULATION - - - - - - - - - - - - - - - - - - -
     game_of_life.run()
     pause_screen.run()
+    # game_mode = change_game_mode()
     generation += display_generation()
 
     # # UPDATE CLOCK AND DISPLAY - - - - - - - - - - - - - - - - - - -
