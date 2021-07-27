@@ -20,6 +20,7 @@ generation = 0
 game_of_life_rules = True
 life_without_death_rules = False
 maze_rules = False
+high_life_rules = False
 
 # # MAIN GAME CLASS - - - - - - - - - - - - - - - - -
 class Game_Of_Life:
@@ -94,6 +95,14 @@ class Game_Of_Life:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
+        if high_life_rules == True:
+            if current_state == 1:
+                if neighbors_count < 2 or neighbors_count > 3:
+                    current_state = 0
+            else:
+                if neighbors_count == 3 or neighbors_count == 6:
+                    current_state = 1
+            return current_state
 
     def run(self): # <-- runs functions above
         self.render_bg()
@@ -108,12 +117,14 @@ class Audio:
         self.click = py.mixer.Sound("audio/click.wav")
         self.unclick = py.mixer.Sound("audio/unclick.wav")
         self.destroy = py.mixer.Sound("audio/destroy.wav")
+        self.switch_mode = py.mixer.Sound("audio/switch_mode.wav")
 
         self.run_sim.set_volume(0.06)
         self.pause_sim.set_volume(0.1)
         self.click.set_volume(0.1)
         self.unclick.set_volume(0.1)
         self.destroy.set_volume(0.1)
+        self.switch_mode.set_volume(0.1)
 
         self.bg_music = py.mixer.music
         self.bg_music.load("audio/dont-forget-me.mp3")
@@ -131,7 +142,7 @@ class Pause_Screen:
         self.title_1_rect = self.title_1.get_rect(center = (380,100))
 
         self.rule_1 = my_font.render("1. Any live cell with 2 or 3 live neighbors survives.", True, "white")
-        self.rule_2_pt_1 = my_font.render("2. Any dead cell with exact 3 live", False, "white")
+        self.rule_2_pt_1 = my_font.render("2. Any dead cell with exactly 3 live", False, "white")
         self.rule_2_pt_2 = my_font.render("neighbors comes to life.", False, "white")
         self.rule_3 = my_font.render("3. All other cells die.", False, "white")
 
@@ -154,12 +165,19 @@ class Pause_Screen:
         self.m_rule_1 = my_font.render("1. Any live cell with between 1 and 5 live neighbors survives.", True, "white")
         self.m_rule_1_rect = self.m_rule_1.get_rect(center = (380,200))
 
+        # # HIGH LIFE DISPLAY
+        self.title_4 = title_font.render("TERRY'S HIGH LIFE", False, "white")
+        self.title_4_rect = self.title_4.get_rect(center = (380,100))
+
+        self.hl_rule_2_pt_1 = my_font.render("2. Any dead cell with 3 or 6 live", False, "white")
+        self.h1_rule_2_pt_1_rect = self.hl_rule_2_pt_1.get_rect(center = (380,300))
+
         # # GAME INSTRUCTIONS - - - - - - - - - - - - - - -
         self.instruction_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
         self.instruction_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
         self.instruction_3 = my_font.render("<Q>, when paused, to clear board", True, "white")
-        self.instruction_4 = my_font.render("<M> to pause/unpause music", True, "white")
-        self.instruction_5 = my_font.render("<ARROW KEYS>, when paused, to change rulesets", True, "white")
+        self.instruction_4 = my_font.render("<ARROW KEYS>, when paused, to change rulesets", True, "white")
+        self.instruction_5 = my_font.render("<M> to pause/unpause music", True, "white")
 
         self.instruction_1_rect = self.instruction_1.get_rect(center = (380,570))
         self.instruction_2_rect = self.instruction_2.get_rect(center = (380,600))
@@ -190,6 +208,12 @@ class Pause_Screen:
                 screen.blit(self.title_3, self.title_3_rect)
                 screen.blit(self.m_rule_1, self.m_rule_1_rect)
                 screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
+                screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
+                screen.blit(self.rule_3, self.rule_3_rect)
+            elif high_life_rules == True:
+                screen.blit(self.title_4, self.title_4_rect)
+                screen.blit(self.rule_1, self.rule_1_rect)
+                screen.blit(self.hl_rule_2_pt_1, self.h1_rule_2_pt_1_rect)
                 screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
                 screen.blit(self.rule_3, self.rule_3_rect)
 
@@ -251,22 +275,36 @@ while True:
                             game_of_life.grid[row][column] = 0
             if event.key == py.K_UP: # <-- switch to Game of Life rules
                 if pause == True:
+                    audio.switch_mode.play()
                     generation = 0
                     game_of_life_rules = True
                     life_without_death_rules = False
                     maze_rules = False
+                    high_life_rules = False
             if event.key == py.K_LEFT:
                 if pause == True: # <-- switch to Life Without Death rules
                     generation = 0
+                    audio.switch_mode.play()
                     game_of_life_rules = False
                     life_without_death_rules = True
                     maze_rules = False
+                    high_life_rules = False
             if event.key == py.K_RIGHT:
                 if pause == True: # <-- switch to Maze rules
                     generation = 0
+                    audio.switch_mode.play()
                     game_of_life_rules = False
                     life_without_death_rules = False
                     maze_rules = True
+                    high_life_rules = False
+            if event.key == py.K_DOWN:
+                if pause == True: # <-- switch to High Life rules
+                    generation = 0
+                    audio.switch_mode.play()
+                    game_of_life_rules = False
+                    life_without_death_rules = False
+                    maze_rules = False
+                    high_life_rules = True
 
     # # RUN SIMULATION - - - - - - - - - - - - - - - - - - -
     game_of_life.run()
