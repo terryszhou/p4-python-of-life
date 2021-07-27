@@ -77,6 +77,11 @@ class Game_Of_Life:
                 current_state = 1
         return current_state
 
+        # if current_state == 0:
+        #     if neighbors_count == 3:
+        #         current_state = 1
+        # return current_state
+
     def run(self): # <-- runs functions above
         self.render_bg()
         self.draw_grid()
@@ -152,7 +157,7 @@ game_of_life = Game_Of_Life()
 audio = Audio()
 pause_screen = Pause_Screen()
 
-# # GENERATION TIMER DISPLAY
+# # GENERATION TIMER DISPLAY - - - - - - - - - - - - - - - - -
 def display_generation():
     global generation
     generation_surf = my_font.render(f"{generation}", False, "white")
@@ -196,6 +201,7 @@ while True:
             if event.key == py.K_q: # <-- clear board if game is paused
                 if pause == True:
                     audio.destroy.play()
+                    generation = 0
                     for row in range(game_of_life.rows):
                         for column in range(game_of_life.cols):
                             game_of_life.grid[row][column] = 0
