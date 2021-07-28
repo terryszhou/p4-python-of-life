@@ -1,4 +1,26 @@
 '''
+# self.scale = 15
+# self.rows = int(screen_width/self.scale)
+# self.cols = int(screen_height/self.scale)
+
+# py.draw.rect(screen, # <-- surface for drawing
+#             cell_status, # <-- color for drawing
+#             [row * self.scale, # <-- rect left
+#             col * self.scale, # <-- rect top
+#             self.scale - self.margin, # <-- rect width
+#             self.scale - self.margin],5,4) # <-- rect height, line width, border radius
+
+# if event.button == 4:
+#     game_of_life.scale += 1
+#     if game_of_life.scale >= 25:
+#         game_of_life.scale = 25
+# elif event.button == 5:
+#     game_of_life.scale -= 1
+#     if game_of_life.scale <= 10:
+#         game_of_life.scale = 10
+'''
+
+'''
 # def update_cell(self, row, col):
 #     current_state = self.grid[row][col]
 #     neighbors = (self.grid[row - 1][column - 1], self.grid[row - 1][column], self.grid[row - 1][column + 1],

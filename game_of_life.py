@@ -6,8 +6,8 @@ from sys import exit
 # # BASIC VARIABLES - - - - - - - - - - - - - - - - -
 py.init()
 py.display.set_caption("Terry's Game of Life")
-screen_width = 757
-screen_height = 757
+screen_width = 730
+screen_height = 730
 screen = py.display.set_mode((screen_width,screen_height))
 screen.fill("black")
 clock = py.time.Clock()
@@ -25,10 +25,10 @@ hl_rules = False # <-- High Life
 # # MAIN GAME CLASS - - - - - - - - - - - - - - - - -
 class Game_Of_Life:
     def __init__(self):
-        self.cell_width = 20
-        self.cell_height = 20
-        self.rows = 36
-        self.cols = 36
+        self.cell_width = 15
+        self.cell_height = 15
+        self.rows = 45
+        self.cols = 45
         self.margin = 1
         self.living = "cornflowerblue"
         self.dead = (44,44,44)
@@ -130,26 +130,39 @@ class Game_Of_Life:
         self.grid[9][9] = 1
 
     def spawn_hive(self):
-        self.grid[16][17] = 1
-        self.grid[16][18] = 1
-        self.grid[17][17] = 1
-        self.grid[17][18] = 1
-        self.grid[18][17] = 1
-        self.grid[18][18] = 1
+        self.grid[20][21] = 1
+        self.grid[20][22] = 1
+        self.grid[21][21] = 1
+        self.grid[21][22] = 1
+        self.grid[22][21] = 1
+        self.grid[22][22] = 1
 
     def spawn_replicator(self):
-        self.grid[16][17] = 1
-        self.grid[16][18] = 1
-        self.grid[16][19] = 1
-        self.grid[17][16] = 1
-        self.grid[17][19] = 1
-        self.grid[18][15] = 1
-        self.grid[18][19] = 1
-        self.grid[19][15] = 1
-        self.grid[19][18] = 1
-        self.grid[20][15] = 1
-        self.grid[20][16] = 1
-        self.grid[20][17] = 1
+        # self.grid[16][17] = 1
+        # self.grid[16][18] = 1
+        # self.grid[16][19] = 1
+        # self.grid[17][16] = 1
+        # self.grid[17][19] = 1
+        # self.grid[18][15] = 1
+        # self.grid[18][19] = 1
+        # self.grid[19][15] = 1
+        # self.grid[19][18] = 1
+        # self.grid[20][15] = 1
+        # self.grid[20][16] = 1
+        # self.grid[20][17] = 1
+        
+        self.grid[20][21] = 1
+        self.grid[20][22] = 1
+        self.grid[20][23] = 1
+        self.grid[21][20] = 1
+        self.grid[21][23] = 1
+        self.grid[22][19] = 1
+        self.grid[22][23] = 1
+        self.grid[23][19] = 1
+        self.grid[23][22] = 1
+        self.grid[24][19] = 1
+        self.grid[24][20] = 1
+        self.grid[24][21] = 1
 
     def spawn_random(self):
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols))
@@ -196,32 +209,32 @@ class Pause_Screen:
         self.gol_rule_2_pt_2 = my_font.render("neighbors comes to life.", False, "white")
         self.gol_rule_3 = my_font.render("3. All other cells die.", False, "white")
 
-        self.gol_title_rect = self.gol_title.get_rect(center = (380,100))
-        self.gol_rule_1_rect = self.gol_rule_1.get_rect(center = (380,200))
-        self.gol_rule_2_pt_1_rect = self.gol_rule_2_pt_1.get_rect(center = (380,300))
-        self.gol_rule_2_pt_2_rect = self.gol_rule_2_pt_2.get_rect(center = (380,330))
-        self.gol_rule_3_rect = self.gol_rule_3.get_rect(center = (380,430))
+        self.gol_title_rect = self.gol_title.get_rect(center = (screen_width/2,100))
+        self.gol_rule_1_rect = self.gol_rule_1.get_rect(center = (screen_width/2,200))
+        self.gol_rule_2_pt_1_rect = self.gol_rule_2_pt_1.get_rect(center = (screen_width/2,300))
+        self.gol_rule_2_pt_2_rect = self.gol_rule_2_pt_2.get_rect(center = (screen_width/2,330))
+        self.gol_rule_3_rect = self.gol_rule_3.get_rect(center = (screen_width/2,430))
 
         # # LIFE WITHOUT DEATH DISPLAY - - - - - - - - - - - - - - -
         self.lwd_title = title_font.render("TERRY'S LIFE WITHOUT DEATH", False, "red")
         self.lwd_rule_1 = my_font.render("1. Cells do not die.", True, "white")
         
-        self.lwd_title_rect = self.lwd_title.get_rect(center = (380,100))
-        self.lwd_rule_1_rect = self.lwd_rule_1.get_rect(center = (380,200))
+        self.lwd_title_rect = self.lwd_title.get_rect(center = (screen_width/2,100))
+        self.lwd_rule_1_rect = self.lwd_rule_1.get_rect(center = (screen_width/2,200))
 
         # # MAZE DISPLAY - - - - - - - - - - - - - - -
         self.mz_title = title_font.render("TERRY'S MAZE", False, "purple")
         self.mz_rule_1 = my_font.render("1. Any living cell with 2, 3, or 4 living neighbors survives.", True, "white")
 
-        self.mz_title_rect = self.mz_title.get_rect(center = (380,100))
-        self.mz_rule_1_rect = self.mz_rule_1.get_rect(center = (380,200))
+        self.mz_title_rect = self.mz_title.get_rect(center = (screen_width/2,100))
+        self.mz_rule_1_rect = self.mz_rule_1.get_rect(center = (screen_width/2,200))
 
         # # HIGH LIFE DISPLAY
         self.hl_title = title_font.render("TERRY'S HIGH LIFE", False, "gold")
         self.hl_rule_2_pt_1 = my_font.render("2. Any dead cell with 3 or 6 living", False, "white")
 
-        self.hl_title_rect = self.hl_title.get_rect(center = (380,100))
-        self.h1_rule_2_pt_1_rect = self.hl_rule_2_pt_1.get_rect(center = (380,300))
+        self.hl_title_rect = self.hl_title.get_rect(center = (screen_width/2,100))
+        self.h1_rule_2_pt_1_rect = self.hl_rule_2_pt_1.get_rect(center = (screen_width/2,300))
 
         # # GAME INSTRUCTIONS - - - - - - - - - - - - - - -
         self.inst_1 = my_font.render("<CLICK> --- resurrect/kill cells", True, "white")
@@ -231,13 +244,13 @@ class Pause_Screen:
         self.inst_5 = my_font.render("<ARROW KEYS> --- change rulesets", True, "white")
         self.inst_6 = my_font.render("Try <G>, <B>, <H>, <R>, and <Q>!", True, "white")
 
-        self.inst_1_rect = self.inst_1.get_rect(center = (380,570))
-        self.inst_2_rect = self.inst_2.get_rect(center = (380,600))
-        self.inst_3_rect = self.inst_3.get_rect(center = (380,630))
-        self.inst_4_rect = self.inst_4.get_rect(center = (380,660))
-        self.inst_5_rect = self.inst_5.get_rect(center = (380,690))
-        self.inst_5_rect = self.inst_5.get_rect(center = (380,690))
-        self.inst_6_rect = self.inst_6.get_rect(center = (380,720))
+        self.inst_1_rect = self.inst_1.get_rect(center = (screen_width/2,520))
+        self.inst_2_rect = self.inst_2.get_rect(center = (screen_width/2,550))
+        self.inst_3_rect = self.inst_3.get_rect(center = (screen_width/2,580))
+        self.inst_4_rect = self.inst_4.get_rect(center = (screen_width/2,610))
+        self.inst_5_rect = self.inst_5.get_rect(center = (screen_width/2,640))
+        self.inst_5_rect = self.inst_5.get_rect(center = (screen_width/2,670))
+        self.inst_6_rect = self.inst_6.get_rect(center = (screen_width/2,700))
 
     def draw_pause(self): # <-- draws variables above if game is paused.
         if pause == True:
@@ -299,15 +312,16 @@ while True:
             py.quit()
             exit()
         if event.type == py.MOUSEBUTTONDOWN: # <-- marks cells as living or dead
-            row = int(event.pos[1]/(game_of_life.cell_height + game_of_life.margin))
-            col = int(event.pos[0]/(game_of_life.cell_width + game_of_life.margin))
-            if game_of_life.grid[row][col] == 0:
-                audio.click.play()
-                game_of_life.grid[row][col] = 1
-            else:
-                audio.unclick.play()
-                game_of_life.grid[row][col] = 0
-            print(f"Row: {row}, Column: {col}")
+            if event.button == 1:
+                row = int(event.pos[1]/(game_of_life.cell_height + game_of_life.margin))
+                col = int(event.pos[0]/(game_of_life.cell_width + game_of_life.margin))
+                if game_of_life.grid[row][col] == 0:
+                    audio.click.play()
+                    game_of_life.grid[row][col] = 1
+                else:
+                    audio.unclick.play()
+                    game_of_life.grid[row][col] = 0
+                print(f"Row: {row}, Column: {col}")
         if event.type == py.KEYDOWN:
             if event.key == py.K_m: # <-- pause/unpause music
                 if audio.bg_music.get_busy() == 1:
