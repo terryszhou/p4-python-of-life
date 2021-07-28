@@ -1,7 +1,6 @@
 # # IMPORT MODULES - - - - - - - - - - - - - - - - - - -
 import pygame as py
 import numpy as np
-from random import choice
 from sys import exit
 
 # # BASIC VARIABLES - - - - - - - - - - - - - - - - -
@@ -18,10 +17,10 @@ pause = True
 generation = 0
 
 # # DEFAULT RULESET STATUSES - - - - - - - - - - - - - - - - -
-game_of_life_rules = True
-life_without_death_rules = False
-maze_rules = False
-high_life_rules = False
+gol_rules = True # <-- Game of Life
+lwd_rules = False # <-- Life Without Death
+mz_rules = False # <-- Maze
+hl_rules = False # <-- High Life
 
 # # MAIN GAME CLASS - - - - - - - - - - - - - - - - -
 class Game_Of_Life:
@@ -46,13 +45,13 @@ class Game_Of_Life:
             for col in range(1, self.cols - 1):
                 if self.grid[row][col] == 1:
                     cell_status = self.living
-                    if game_of_life_rules == True: # <-- changes cell color based on ruleset
+                    if gol_rules == True: # <-- changes cell color based on ruleset
                         self.living = "cornflowerblue"
-                    elif life_without_death_rules == True:
+                    elif lwd_rules == True:
                         self.living = "red"
-                    elif maze_rules == True:
+                    elif mz_rules == True:
                         self.living = "purple"
-                    elif high_life_rules == True:
+                    elif hl_rules == True:
                         self.living = "gold"
                 else:
                     cell_status = self.dead
@@ -83,7 +82,7 @@ class Game_Of_Life:
                         neighbors_count += 1
                 except IndexError:
                     continue
-        if game_of_life_rules == True: # <-- Game of Life rules
+        if gol_rules == True: # <-- Game of Life rules
             if current_state == 1:
                 if neighbors_count < 2 or neighbors_count > 3:
                     current_state = 0
@@ -91,12 +90,12 @@ class Game_Of_Life:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if life_without_death_rules == True: # <-- Life Without Death rules
+        if lwd_rules == True: # <-- Life Without Death rules
             if current_state == 0:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if maze_rules == True: # <-- Maze rules
+        if mz_rules == True: # <-- Maze rules
             if current_state == 1:
                 if neighbors_count < 1 or neighbors_count > 5:
                     current_state = 0
@@ -104,7 +103,7 @@ class Game_Of_Life:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if high_life_rules == True: # <-- High Life rules
+        if hl_rules == True: # <-- High Life rules
             if current_state == 1:
                 if neighbors_count < 2 or neighbors_count > 3:
                     current_state = 0
@@ -121,14 +120,14 @@ class Game_Of_Life:
         self.grid[6][5] = 1
 
     def spawn_beacon(self):
-        self.grid[6][7] = 1
-        self.grid[7][7] = 1
         self.grid[6][6] = 1
+        self.grid[6][7] = 1
         self.grid[7][6] = 1
+        self.grid[7][7] = 1
         self.grid[8][8] = 1
         self.grid[8][9] = 1
-        self.grid[9][9] = 1
         self.grid[9][8] = 1
+        self.grid[9][9] = 1
 
     def spawn_random(self):
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols))
@@ -170,16 +169,16 @@ class Pause_Screen:
 
         # # GAME OF LIFE DISPLAY - - - - - - - - - - - - - - -
         self.gol_title = title_font.render("TERRY'S GAME OF LIFE", False, "cornflowerblue")
-        self.rule_1 = my_font.render("1. Any living cell with 2 or 3 living neighbors survives.", True, "white")
-        self.rule_2_pt_1 = my_font.render("2. Any dead cell with exactly 3 living", False, "white")
-        self.rule_2_pt_2 = my_font.render("neighbors comes to life.", False, "white")
-        self.rule_3 = my_font.render("3. All other cells die.", False, "white")
+        self.gol_rule_1 = my_font.render("1. Any living cell with 2 or 3 living neighbors survives.", True, "white")
+        self.gol_rule_2_pt_1 = my_font.render("2. Any dead cell with exactly 3 living", False, "white")
+        self.gol_rule_2_pt_2 = my_font.render("neighbors comes to life.", False, "white")
+        self.gol_rule_3 = my_font.render("3. All other cells die.", False, "white")
 
         self.gol_title_rect = self.gol_title.get_rect(center = (380,100))
-        self.rule_1_rect = self.rule_1.get_rect(center = (380,200))
-        self.rule_2_pt_1_rect = self.rule_2_pt_1.get_rect(center = (380,300))
-        self.rule_2_pt_2_rect = self.rule_2_pt_2.get_rect(center = (380,330))
-        self.rule_3_rect = self.rule_3.get_rect(center = (380,430))
+        self.gol_rule_1_rect = self.gol_rule_1.get_rect(center = (380,200))
+        self.gol_rule_2_pt_1_rect = self.gol_rule_2_pt_1.get_rect(center = (380,300))
+        self.gol_rule_2_pt_2_rect = self.gol_rule_2_pt_2.get_rect(center = (380,330))
+        self.gol_rule_3_rect = self.gol_rule_3.get_rect(center = (380,430))
 
         # # LIFE WITHOUT DEATH DISPLAY - - - - - - - - - - - - - - -
         self.lwd_title = title_font.render("TERRY'S LIFE WITHOUT DEATH", False, "red")
@@ -190,7 +189,7 @@ class Pause_Screen:
 
         # # MAZE DISPLAY - - - - - - - - - - - - - - -
         self.mz_title = title_font.render("TERRY'S MAZE", False, "purple")
-        self.mz_rule_1 = my_font.render("1. Any live cell with between 1 and 5 living neighbors survives.", True, "white")
+        self.mz_rule_1 = my_font.render("1. Any living cell with 2, 3, or 4 living neighbors survives.", True, "white")
 
         self.mz_title_rect = self.mz_title.get_rect(center = (380,100))
         self.mz_rule_1_rect = self.mz_rule_1.get_rect(center = (380,200))
@@ -203,49 +202,53 @@ class Pause_Screen:
         self.h1_rule_2_pt_1_rect = self.hl_rule_2_pt_1.get_rect(center = (380,300))
 
         # # GAME INSTRUCTIONS - - - - - - - - - - - - - - -
-        self.instruction_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
-        self.instruction_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
-        self.instruction_3 = my_font.render("<Q>, when paused, to clear board", True, "white")
-        self.instruction_4 = my_font.render("<ARROW KEYS>, when paused, to change rulesets", True, "white")
-        self.instruction_5 = my_font.render("<M> to pause/unpause music", True, "white")
+        self.inst_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
+        self.inst_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
+        self.inst_3 = my_font.render("<Q> to clear board", True, "white")
+        self.inst_4 = my_font.render("<M> to pause/unpause music", True, "white")
+        self.inst_5 = my_font.render("<ARROW KEYS>, when paused, to change rulesets", True, "white")
+        self.inst_6 = my_font.render("Try <G>, <B>, and <R>!", True, "white")
 
-        self.instruction_1_rect = self.instruction_1.get_rect(center = (380,570))
-        self.instruction_2_rect = self.instruction_2.get_rect(center = (380,600))
-        self.instruction_3_rect = self.instruction_3.get_rect(center = (380,630))
-        self.instruction_4_rect = self.instruction_4.get_rect(center = (380,660))
-        self.instruction_5_rect = self.instruction_5.get_rect(center = (380,690))
+        self.inst_1_rect = self.inst_1.get_rect(center = (380,570))
+        self.inst_2_rect = self.inst_2.get_rect(center = (380,600))
+        self.inst_3_rect = self.inst_3.get_rect(center = (380,630))
+        self.inst_4_rect = self.inst_4.get_rect(center = (380,660))
+        self.inst_5_rect = self.inst_5.get_rect(center = (380,690))
+        self.inst_5_rect = self.inst_5.get_rect(center = (380,690))
+        self.inst_6_rect = self.inst_6.get_rect(center = (380,720))
 
     def draw_pause(self): # <-- draws variables above if game is paused.
         if pause == True:
             screen.blit(self.pause_surf, (0,0))
-            screen.blit(self.instruction_1, self.instruction_1_rect)
-            screen.blit(self.instruction_2, self.instruction_2_rect)
-            screen.blit(self.instruction_3, self.instruction_3_rect)
-            screen.blit(self.instruction_4, self.instruction_4_rect)
-            screen.blit(self.instruction_5, self.instruction_5_rect)
-            if game_of_life_rules == True:
+            screen.blit(self.inst_1, self.inst_1_rect)
+            screen.blit(self.inst_2, self.inst_2_rect)
+            screen.blit(self.inst_3, self.inst_3_rect)
+            screen.blit(self.inst_4, self.inst_4_rect)
+            screen.blit(self.inst_5, self.inst_5_rect)
+            screen.blit(self.inst_6, self.inst_6_rect)
+            if gol_rules == True:
                 screen.blit(self.gol_title, self.gol_title_rect)
-                screen.blit(self.rule_1, self.rule_1_rect)
-                screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
-                screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
-                screen.blit(self.rule_3, self.rule_3_rect)
-            elif life_without_death_rules == True:
+                screen.blit(self.gol_rule_1, self.gol_rule_1_rect)
+                screen.blit(self.gol_rule_2_pt_1, self.gol_rule_2_pt_1_rect)
+                screen.blit(self.gol_rule_2_pt_2, self.gol_rule_2_pt_2_rect)
+                screen.blit(self.gol_rule_3, self.gol_rule_3_rect)
+            elif lwd_rules == True:
                 screen.blit(self.lwd_title, self.lwd_title_rect)
                 screen.blit(self.lwd_rule_1, self.lwd_rule_1_rect)
-                screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
-                screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
-            elif maze_rules == True:
+                screen.blit(self.gol_rule_2_pt_1, self.gol_rule_2_pt_1_rect)
+                screen.blit(self.gol_rule_2_pt_2, self.gol_rule_2_pt_2_rect)
+            elif mz_rules == True:
                 screen.blit(self.mz_title, self.mz_title_rect)
                 screen.blit(self.mz_rule_1, self.mz_rule_1_rect)
-                screen.blit(self.rule_2_pt_1, self.rule_2_pt_1_rect)
-                screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
-                screen.blit(self.rule_3, self.rule_3_rect)
-            elif high_life_rules == True:
+                screen.blit(self.gol_rule_2_pt_1, self.gol_rule_2_pt_1_rect)
+                screen.blit(self.gol_rule_2_pt_2, self.gol_rule_2_pt_2_rect)
+                screen.blit(self.gol_rule_3, self.gol_rule_3_rect)
+            elif hl_rules == True:
                 screen.blit(self.hl_title, self.hl_title_rect)
-                screen.blit(self.rule_1, self.rule_1_rect)
+                screen.blit(self.gol_rule_1, self.gol_rule_1_rect)
                 screen.blit(self.hl_rule_2_pt_1, self.h1_rule_2_pt_1_rect)
-                screen.blit(self.rule_2_pt_2, self.rule_2_pt_2_rect)
-                screen.blit(self.rule_3, self.rule_3_rect)
+                screen.blit(self.gol_rule_2_pt_2, self.gol_rule_2_pt_2_rect)
+                screen.blit(self.gol_rule_3, self.gol_rule_3_rect)
 
     def run(self):
         self.draw_pause()
@@ -297,51 +300,41 @@ while True:
                     audio.run_sim.play()
                     pause = False
             if event.key == py.K_q: # <-- clear board if game is paused
-                if pause == True:
-                    audio.destroy.play()
-                    generation = 0
-                    for row in range(game_of_life.rows):
-                        for column in range(game_of_life.cols):
-                            game_of_life.grid[row][column] = 0
-            if event.key == py.K_UP: # <-- switch to Game of Life rules
-                if pause == True:
-                    audio.switch_mode.play()
-                    generation = 0
-                    game_of_life_rules = True
-                    life_without_death_rules = False
-                    maze_rules = False
-                    high_life_rules = False
-            if event.key == py.K_LEFT:
-                if pause == True: # <-- switch to Life Without Death rules
-                    generation = 0
-                    audio.switch_mode.play()
-                    game_of_life_rules = False
-                    life_without_death_rules = True
-                    maze_rules = False
-                    high_life_rules = False
-            if event.key == py.K_RIGHT:
-                if pause == True: # <-- switch to Maze rules
-                    generation = 0
-                    audio.switch_mode.play()
-                    game_of_life_rules = False
-                    life_without_death_rules = False
-                    maze_rules = True
-                    high_life_rules = False
-            if event.key == py.K_DOWN:
-                if pause == True: # <-- switch to High Life rules
-                    generation = 0
-                    audio.switch_mode.play()
-                    game_of_life_rules = False
-                    life_without_death_rules = False
-                    maze_rules = False
-                    high_life_rules = True
+                audio.destroy.play()
+                generation = 0
+                for row in range(game_of_life.rows):
+                    for column in range(game_of_life.cols):
+                        game_of_life.grid[row][column] = 0
+            if event.key == py.K_UP or event.key == py.K_LEFT or event.key == py.K_RIGHT or event.key == py.K_DOWN:
+                audio.switch_mode.play()
+                generation = 0
+                if event.key == py.K_UP: # <-- switch to Game of Life rules
+                    gol_rules = True
+                    lwd_rules = False
+                    mz_rules = False
+                    hl_rules = False
+                if event.key == py.K_LEFT: # <-- switch to Life Without Death rules
+                    gol_rules = False
+                    lwd_rules = True
+                    mz_rules = False
+                    hl_rules = False
+                if event.key == py.K_RIGHT: # <-- switch to Maze rules
+                    gol_rules = False
+                    lwd_rules = False
+                    mz_rules = True
+                    hl_rules = False
+                if event.key == py.K_DOWN: # <-- switch to High Life rules
+                    gol_rules = False
+                    lwd_rules = False
+                    mz_rules = False
+                    hl_rules = True
             if event.key == py.K_g: # <-- spawns glider
                 audio.spawn.play()
                 game_of_life.spawn_glider()
             if event.key == py.K_b: # <-- spawns blinker
                 audio.spawn.play()
                 game_of_life.spawn_beacon()
-            if event.key == py.K_r:
+            if event.key == py.K_r: # <-- spawns a random grid
                 audio.spawn.play()
                 game_of_life.spawn_random()
 
