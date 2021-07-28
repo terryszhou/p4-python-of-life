@@ -90,12 +90,12 @@ class Game_Of_Life:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if lwd_rules == True: # <-- Life Without Death rules
+        elif lwd_rules == True: # <-- Life Without Death rules
             if current_state == 0:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if mz_rules == True: # <-- Maze rules
+        elif mz_rules == True: # <-- Maze rules
             if current_state == 1:
                 if neighbors_count < 1 or neighbors_count > 5:
                     current_state = 0
@@ -103,7 +103,7 @@ class Game_Of_Life:
                 if neighbors_count == 3:
                     current_state = 1
             return current_state
-        if hl_rules == True: # <-- High Life rules
+        elif hl_rules == True: # <-- High Life rules
             if current_state == 1:
                 if neighbors_count < 2 or neighbors_count > 3:
                     current_state = 0
@@ -128,6 +128,14 @@ class Game_Of_Life:
         self.grid[8][9] = 1
         self.grid[9][8] = 1
         self.grid[9][9] = 1
+
+    def spawn_hive(self):
+        self.grid[16][17] = 1
+        self.grid[16][18] = 1
+        self.grid[17][17] = 1
+        self.grid[17][18] = 1
+        self.grid[18][17] = 1
+        self.grid[18][18] = 1
 
     def spawn_random(self):
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols))
@@ -202,12 +210,12 @@ class Pause_Screen:
         self.h1_rule_2_pt_1_rect = self.hl_rule_2_pt_1.get_rect(center = (380,300))
 
         # # GAME INSTRUCTIONS - - - - - - - - - - - - - - -
-        self.inst_1 = my_font.render("<CLICK> to bring cells to life", True, "white")
-        self.inst_2 = my_font.render("<SPACEBAR> to pause/unpause", True, "white")
-        self.inst_3 = my_font.render("<Q> to clear board", True, "white")
-        self.inst_4 = my_font.render("<M> to pause/unpause music", True, "white")
-        self.inst_5 = my_font.render("<ARROW KEYS>, when paused, to change rulesets", True, "white")
-        self.inst_6 = my_font.render("Try <G>, <B>, and <R>!", True, "white")
+        self.inst_1 = my_font.render("<CLICK> --- resurrect/kill cells", True, "white")
+        self.inst_2 = my_font.render("<SPACEBAR> --- (un)pause simulation", True, "white")
+        self.inst_3 = my_font.render("<M> --- (un)pause music", True, "white")
+        self.inst_4 = my_font.render("<Q> --- clear board", True, "white")
+        self.inst_5 = my_font.render("<ARROW KEYS> --- change rulesets", True, "white")
+        self.inst_6 = my_font.render("Try <G>, <B>, <H>, and <R>!", True, "white")
 
         self.inst_1_rect = self.inst_1.get_rect(center = (380,570))
         self.inst_2_rect = self.inst_2.get_rect(center = (380,600))
@@ -293,11 +301,10 @@ while True:
                 else:
                     audio.bg_music.unpause()
             if event.key == py.K_SPACE: # <-- pause/unpause game
+                audio.pause_sim.play()
                 if pause == False:
-                    audio.pause_sim.play()
                     pause = True
                 else:
-                    audio.run_sim.play()
                     pause = False
             if event.key == py.K_q: # <-- clear board if game is paused
                 audio.destroy.play()
@@ -334,7 +341,10 @@ while True:
             if event.key == py.K_b: # <-- spawns blinker
                 audio.spawn.play()
                 game_of_life.spawn_beacon()
-            if event.key == py.K_r: # <-- spawns a random grid
+            if event.key == py.K_h: # <-- spawns hive
+                audio.spawn.play()
+                game_of_life.spawn_hive()
+            if event.key == py.K_r: # <-- spawns random grid
                 audio.spawn.play()
                 game_of_life.spawn_random()
 
