@@ -31,7 +31,7 @@ class Game_Of_Life:
         self.rows = 36
         self.cols = 36
         self.margin = 1
-        self.living = choice(["red", "orange", "green", "gold", "cornflowerblue", "purple", "deeppink", "black"])
+        self.living = "cornflowerblue"
         self.dead = (44,44,44)
         self.game_surf = py.Surface((screen_width,screen_height))
         self.game_surf.fill((0,0,0))
@@ -46,6 +46,14 @@ class Game_Of_Life:
             for col in range(1, self.cols - 1):
                 if self.grid[row][col] == 1:
                     cell_status = self.living
+                    if game_of_life_rules == True: # <-- changes cell color based on ruleset
+                        self.living = "cornflowerblue"
+                    elif life_without_death_rules == True:
+                        self.living = "red"
+                    elif maze_rules == True:
+                        self.living = "purple"
+                    elif high_life_rules == True:
+                        self.living = "gold"
                 else:
                     cell_status = self.dead
                 py.draw.rect(screen, # <-- surface for drawing
@@ -122,6 +130,9 @@ class Game_Of_Life:
         self.grid[9][9] = 1
         self.grid[9][8] = 1
 
+    def spawn_random(self):
+        self.grid = np.random.randint(0,2, size = (self.rows, self.cols))
+
     def run(self): # <-- runs functions above
         self.render_bg()
         self.draw_grid()
@@ -178,7 +189,7 @@ class Pause_Screen:
         self.lwd_rule_1_rect = self.lwd_rule_1.get_rect(center = (380,200))
 
         # # MAZE DISPLAY - - - - - - - - - - - - - - -
-        self.mz_title = title_font.render("TERRY'S MAZE", False, "green")
+        self.mz_title = title_font.render("TERRY'S MAZE", False, "purple")
         self.mz_rule_1 = my_font.render("1. Any live cell with between 1 and 5 living neighbors survives.", True, "white")
 
         self.mz_title_rect = self.mz_title.get_rect(center = (380,100))
@@ -324,12 +335,15 @@ while True:
                     life_without_death_rules = False
                     maze_rules = False
                     high_life_rules = True
-            if event.key == py.K_g:
+            if event.key == py.K_g: # <-- spawns glider
                 audio.spawn.play()
                 game_of_life.spawn_glider()
-            if event.key == py.K_b:
+            if event.key == py.K_b: # <-- spawns blinker
                 audio.spawn.play()
                 game_of_life.spawn_beacon()
+            if event.key == py.K_r:
+                audio.spawn.play()
+                game_of_life.spawn_random()
 
     # # RUN SIMULATION - - - - - - - - - - - - - - - - - - -
     game_of_life.run()
