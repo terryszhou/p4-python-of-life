@@ -137,6 +137,20 @@ class Game_Of_Life:
         self.grid[18][17] = 1
         self.grid[18][18] = 1
 
+    def spawn_replicator(self):
+        self.grid[16][17] = 1
+        self.grid[16][18] = 1
+        self.grid[16][19] = 1
+        self.grid[17][16] = 1
+        self.grid[17][19] = 1
+        self.grid[18][15] = 1
+        self.grid[18][19] = 1
+        self.grid[19][15] = 1
+        self.grid[19][18] = 1
+        self.grid[20][15] = 1
+        self.grid[20][16] = 1
+        self.grid[20][17] = 1
+
     def spawn_random(self):
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols))
 
@@ -213,9 +227,9 @@ class Pause_Screen:
         self.inst_1 = my_font.render("<CLICK> --- resurrect/kill cells", True, "white")
         self.inst_2 = my_font.render("<SPACEBAR> --- (un)pause simulation", True, "white")
         self.inst_3 = my_font.render("<M> --- (un)pause music", True, "white")
-        self.inst_4 = my_font.render("<Q> --- clear board", True, "white")
+        self.inst_4 = my_font.render("<C> --- clear board", True, "white")
         self.inst_5 = my_font.render("<ARROW KEYS> --- change rulesets", True, "white")
-        self.inst_6 = my_font.render("Try <G>, <B>, <H>, and <R>!", True, "white")
+        self.inst_6 = my_font.render("Try <G>, <B>, <H>, <R>, and <Q>!", True, "white")
 
         self.inst_1_rect = self.inst_1.get_rect(center = (380,570))
         self.inst_2_rect = self.inst_2.get_rect(center = (380,600))
@@ -306,7 +320,7 @@ while True:
                     pause = True
                 else:
                     pause = False
-            if event.key == py.K_q: # <-- clear board if game is paused
+            if event.key == py.K_c: # <-- clear board if game is paused
                 audio.destroy.play()
                 generation = 0
                 for row in range(game_of_life.rows):
@@ -344,7 +358,10 @@ while True:
             if event.key == py.K_h: # <-- spawns hive
                 audio.spawn.play()
                 game_of_life.spawn_hive()
-            if event.key == py.K_r: # <-- spawns random grid
+            if event.key == py.K_r: # <-- spawns hive
+                audio.spawn.play()
+                game_of_life.spawn_replicator()
+            if event.key == py.K_q: # <-- spawns random grid
                 audio.spawn.play()
                 game_of_life.spawn_random()
 
