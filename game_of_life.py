@@ -6,8 +6,8 @@ from sys import exit
 # # BASIC VARIABLES - - - - - - - - - - - - - - - - -
 py.init()
 py.display.set_caption("Terry's Game of Life")
-screen_width = 725
-screen_height = 725
+screen_width = 736
+screen_height = 736
 screen = py.display.set_mode((screen_width,screen_height))
 screen.fill("black")
 clock = py.time.Clock()
@@ -27,14 +27,15 @@ class Game_Of_Life:
     def __init__(self):
         self.cell_width = 15
         self.cell_height = 15
-        self.rows = 45
-        self.cols = 45
+        self.rows = 46
+        self.cols = 46
         self.margin = 1
         self.living = "cornflowerblue"
         self.dead = (44,44,44)
         self.game_surf = py.Surface((screen_width,screen_height))
         self.game_surf.fill((0,0,0))
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols))
+        self.midpoint = int(self.rows/2)
 
     def render_bg(self):
         screen.blit(self.game_surf, (0,0))
@@ -120,36 +121,72 @@ class Game_Of_Life:
         self.grid[6][5] = 1
 
     def spawn_beacon(self):
-        self.grid[6][6] = 1
-        self.grid[6][7] = 1
-        self.grid[7][6] = 1
-        self.grid[7][7] = 1
-        self.grid[8][8] = 1
-        self.grid[8][9] = 1
-        self.grid[9][8] = 1
-        self.grid[9][9] = 1
+        self.grid[self.midpoint - 3][self.midpoint - 2] = 1
+        self.grid[self.midpoint - 3][self.midpoint - 3] = 1
+        self.grid[self.midpoint - 2][self.midpoint - 3] = 1
+        self.grid[self.midpoint - 1][self.midpoint] = 1
+        self.grid[self.midpoint][self.midpoint] = 1
+        self.grid[self.midpoint][self.midpoint - 1] = 1
 
     def spawn_hive(self):
-        self.grid[20][21] = 1
-        self.grid[20][22] = 1
-        self.grid[21][21] = 1
-        self.grid[21][22] = 1
-        self.grid[22][21] = 1
-        self.grid[22][22] = 1
+        self.grid[self.midpoint - 3][self.midpoint - 2] = 1
+        self.grid[self.midpoint - 3][self.midpoint - 1] = 1
+        self.grid[self.midpoint - 2][self.midpoint - 2] = 1
+        self.grid[self.midpoint - 2][self.midpoint - 1] = 1
+        self.grid[self.midpoint - 1][self.midpoint - 2] = 1
+        self.grid[self.midpoint - 1][self.midpoint - 1] = 1
 
     def spawn_replicator(self):
-        self.grid[20][21] = 1
-        self.grid[20][22] = 1
-        self.grid[20][23] = 1
-        self.grid[21][20] = 1
-        self.grid[21][23] = 1
-        self.grid[22][19] = 1
-        self.grid[22][23] = 1
-        self.grid[23][19] = 1
-        self.grid[23][22] = 1
-        self.grid[24][19] = 1
-        self.grid[24][20] = 1
-        self.grid[24][21] = 1
+        self.grid[self.midpoint - 3][self.midpoint - 2] = 1
+        self.grid[self.midpoint - 3][self.midpoint - 1] = 1
+        self.grid[self.midpoint - 3][self.midpoint] = 1
+        self.grid[self.midpoint - 2][self.midpoint - 3] = 1
+        self.grid[self.midpoint - 2][self.midpoint] = 1
+        self.grid[self.midpoint - 1][self.midpoint - 4] = 1
+        self.grid[self.midpoint - 1][self.midpoint] = 1
+        self.grid[self.midpoint][self.midpoint - 4] = 1
+        self.grid[self.midpoint][self.midpoint - 1] = 1
+        self.grid[self.midpoint + 1][self.midpoint - 4] = 1
+        self.grid[self.midpoint + 1][self.midpoint - 3] = 1
+        self.grid[self.midpoint + 1][self.midpoint - 2] = 1
+
+    def spawn_gosper_gun(self):
+        self.grid[6][4] = 1  
+        self.grid[6][5] = 1        
+        self.grid[7][5] = 1       
+        self.grid[7][4] = 1        
+        self.grid[7][14] = 1
+        self.grid[6][14] = 1
+        self.grid[8][14] = 1
+        self.grid[5][15] = 1
+        self.grid[9][15] = 1
+        self.grid[4][16] = 1
+        self.grid[4][17] = 1
+        self.grid[10][16] = 1
+        self.grid[10][17] = 1
+        self.grid[9][19] = 1
+        self.grid[8][20] = 1
+        self.grid[7][20] = 1
+        self.grid[6][20] = 1
+        self.grid[5][19] = 1
+        self.grid[7][18] = 1
+        self.grid[7][21] = 1
+        self.grid[6][24] = 1
+        self.grid[5][24] = 1
+        self.grid[4][24] = 1
+        self.grid[4][25] = 1
+        self.grid[5][25] = 1
+        self.grid[6][25] = 1
+        self.grid[3][26] = 1
+        self.grid[7][26] = 1
+        self.grid[7][28] = 1
+        self.grid[8][28] = 1
+        self.grid[3][28] = 1
+        self.grid[2][28] = 1
+        self.grid[4][38] = 1
+        self.grid[4][39] = 1
+        self.grid[5][39] = 1
+        self.grid[5][38] = 1
 
     def spawn_random(self):
         self.grid = np.random.randint(0,2, size = (self.rows, self.cols))
@@ -280,7 +317,7 @@ pause_screen = Pause_Screen()
 def display_generation():
     global generation
     generation_surf = my_font.render(f"{generation}", False, "white")
-    generation_rect = generation_surf.get_rect(center = (700,700))
+    generation_rect = generation_surf.get_rect(center = (screen_width/(1.05),screen_height/(1.05)))
     screen.blit(generation_surf, generation_rect)
     if pause == False:
         return int(clock.tick(10)/100)
@@ -321,8 +358,8 @@ while True:
                 audio.destroy.play()
                 generation = 0
                 for row in range(game_of_life.rows):
-                    for column in range(game_of_life.cols):
-                        game_of_life.grid[row][column] = 0
+                    for col in range(game_of_life.cols):
+                        game_of_life.grid[row][col] = 0
             if e.key in (py.K_UP, py.K_LEFT, py.K_RIGHT, py.K_DOWN):
                 audio.switch_mode.play()
                 generation = 0
@@ -338,12 +375,13 @@ while True:
                 if e.key == py.K_DOWN: # <-- switch to High Life rules
                     gol_rules = lwd_rules = mz_rules = False
                     hl_rules = True
-            if e.key in (py.K_g, py.K_b, py.K_h, py.K_r, py.K_q):
+            if e.key in (py.K_g, py.K_b, py.K_h, py.K_r, py.K_q, py.K_3):
                 audio.spawn.play()
                 if e.key == py.K_g: game_of_life.spawn_glider() # <-- spawns glider
                 if e.key == py.K_b: game_of_life.spawn_beacon() # <-- spawns blinker
                 if e.key == py.K_h: game_of_life.spawn_hive() # <-- spawns hive
                 if e.key == py.K_r: game_of_life.spawn_replicator() # <-- spawns hive
+                if e.key == py.K_3: game_of_life.spawn_gosper_gun() # <-- spawns gosper glider gun
                 if e.key == py.K_q: game_of_life.spawn_random() # <-- spawns random grid
 
     # # RUN SIMULATION - - - - - - - - - - - - - - - - - - -
